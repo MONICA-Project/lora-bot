@@ -46,9 +46,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Lora\Lora\Lora.csproj">
       <Project>{85a78b05-5843-4e4d-8c56-4bcb12613750}</Project>
       <Name>Lora</Name>
