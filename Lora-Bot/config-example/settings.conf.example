@@ -1,0 +1,8 @@
+﻿[logging]
+path=/var/log/lorabot.log
+
+[lora]
+frequency=868100000
+spreadingfactor=8
+signalbandwith=125000
+codingrate=6

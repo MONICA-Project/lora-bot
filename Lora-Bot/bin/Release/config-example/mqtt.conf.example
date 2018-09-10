@@ -1,0 +1,6 @@
+﻿[modul]
+config=private
+
+[settings]
+type=mqtt
+server=localhost
