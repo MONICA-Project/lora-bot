@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BlubbFish.Utils;
 using BlubbFish.Utils.IoT.Bots;
-using BlubbFish.Utils.IoT.Interfaces;
 using Fraunhofer.Fit.Iot.Lora;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
