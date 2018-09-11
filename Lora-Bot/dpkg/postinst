@@ -1,0 +1,8 @@
+#!/bin/bash
+
+systemctl enable lorabot
+systemctl daemon-reload
+if [[ $(systemctl is-active lorabot || true) == "active" ]]
+then
+        service lorabot restart
+fi

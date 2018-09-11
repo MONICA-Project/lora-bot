@@ -32,8 +32,9 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.2.0")]
+[assembly: AssemblyFileVersion("1.2.0")]
 /*
- * 1.1.0.0 Update Scral addresses
+ * 1.1.0 Update Scral addresses
+ * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
  */

@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Moduls\Googlelocation.cs" />
     <Compile Include="Moduls\Mqtt.cs" />
     <Compile Include="Moduls\Scral.cs" />
     <Compile Include="Moduls\Txtout.cs" />
@@ -86,6 +85,9 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="config-example\scral.conf.example">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="config-example\mqtt.conf.example">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -95,6 +97,14 @@
     <None Include="config-example\txtout.conf.example">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="dpkg\control" />
+    <None Include="dpkg\create-Builds.bat" />
+    <None Include="dpkg\make-deb.sh" />
+    <None Include="dpkg\postinst" />
+    <None Include="dpkg\preinst" />
+    <None Include="dpkg\prerm" />
+    <None Include="dpkg\lorabot-logrotate" />
+    <None Include="dpkg\lorabot.service" />
     <None Include="gpio.2.44">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -104,10 +114,6 @@
     <None Include="lora.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config-example\googlelocation.conf.example" />
-    <Content Include="resources\google.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
