@@ -1,6 +1,13 @@
-﻿[modul]
+[modul]
 config=private
 
-[settings]
-type=mqtt
-server=localhost
+[general]
+server=https://portal.monica-cloud.eu/
+
+[update]
+addr=scral/puetz/dexels/wearable/localization
+method=put
+
+[register]
+addr=scral/puetz/dexels/wearable
+method=post

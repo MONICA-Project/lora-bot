@@ -16,8 +16,32 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     private readonly List<String> nodes = new List<String>();
     public override event ModulEvent Update;
     private readonly Object getLock = new Object();
-    private readonly String server = "https://portal.monica-cloud.eu/";
-    public Scral(LoraController lib, InIReader settings) : base(lib, settings) { }
+    public Scral(LoraController lib, InIReader settings) : base(lib, settings) {
+      if(!this.config.ContainsKey("general")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: Config section [general] not exist");
+      }
+      if(!this.config["general"].ContainsKey("server")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [general] value server not exist");
+      }
+      if (!this.config.ContainsKey("update")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: Config section [update] not exist");
+      }
+      if (!this.config["update"].ContainsKey("addr")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [update] value addr not exist");
+      }
+      if (!this.config["update"].ContainsKey("method")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [update] value method not exist");
+      }
+      if (!this.config.ContainsKey("register")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: Config section [register] not exist");
+      }
+      if (!this.config["register"].ContainsKey("addr")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [register] value addr not exist");
+      }
+      if (!this.config["register"].ContainsKey("method")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [register] value method not exist");
+      }
+    }
 
     public override void EventLibSetter() {
       this.library.Update += this.HandleLibUpdate;
@@ -28,11 +52,13 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
         DeviceUpdateEvent e = state as DeviceUpdateEvent;
         LoraClient l = (LoraClient)e.Parent;
         if (!this.nodes.Contains(l.Name)) {
-          this.Register(l);
+          this.SendRegister(l);
           this.nodes.Add(l.Name);
         }
         this.SendUpdate(l);
-      } catch { }
+      } catch (Exception e) {
+        Helper.WriteError("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral.LibUpadteThread: " + e.Message);
+      }
     }
 
     private void SendUpdate(LoraClient l) {
@@ -47,14 +73,20 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
           { "herr", l.Gps.Hdop },
           { "battery_level", l.Snr }
         };
-        if(this.RequestString("scral/puetz/dexels/wearable/localization", JsonMapper.ToJson(d), false, RequestMethod.PUT) == null) {
-          this.Register(l);
+        try {
+          String addr = this.config["update"]["addr"];
+          if (Enum.TryParse(this.config["update"]["method"], true, out RequestMethod meth)) {
+            this.RequestString(addr, JsonMapper.ToJson(d), false, meth);
+            this.Update?.Invoke(this, new BlubbFish.Utils.IoT.Bots.Events.ModulEventArgs(addr, meth.ToString(), JsonMapper.ToJson(d), "SCRAL"));
+          }
+        } catch (Exception e) {
+          Helper.WriteError("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral.SendUpdate: " + e.Message);
+          this.SendRegister(l);
         }
-        this.Update?.Invoke(this, new BlubbFish.Utils.IoT.Bots.Events.ModulEventArgs("scral/puetz/dexels/wearable/localization", "PUT", JsonMapper.ToJson(d), "SCRAL"));
       }
     }
 
-    private void Register(LoraClient l) {
+    private void SendRegister(LoraClient l) {
       Dictionary<String, Object> d = new Dictionary<String, Object> {
         { "device", "wearable" },
         { "sensor", "tag" },
@@ -65,8 +97,15 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
         { "observationType", "propietary" },
         { "state", "active" }
       };
-      this.RequestString("scral/puetz/dexels/wearable", JsonMapper.ToJson(d), false, RequestMethod.POST);
-      this.Update?.Invoke(this, new BlubbFish.Utils.IoT.Bots.Events.ModulEventArgs("scral/puetz/dexels/wearable", "POST", JsonMapper.ToJson(d), "SCRAL"));
+      try {
+        String addr = this.config["register"]["addr"];
+        if (Enum.TryParse(this.config["register"]["method"], true, out RequestMethod meth)) {
+          this.RequestString(addr, JsonMapper.ToJson(d), false, meth);
+          this.Update?.Invoke(this, new BlubbFish.Utils.IoT.Bots.Events.ModulEventArgs(addr, meth.ToString(), JsonMapper.ToJson(d), "SCRAL"));
+        }
+      } catch (Exception e) {
+        Helper.WriteError("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral.SendRegister: " + e.Message);
+      }
     }
 
     public override void Dispose() { }
@@ -77,8 +116,8 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     private String RequestString(String address, String json = "", Boolean withoutput = true, RequestMethod method = RequestMethod.GET) {
       String ret = null;
       lock (this.getLock) {
-        HttpWebRequest request = WebRequest.CreateHttp(this.server + address);
-        request.Timeout = 5000;
+        HttpWebRequest request = WebRequest.CreateHttp(this.config["general"]["server"] + address);
+        request.Timeout = 2000;
         if (method == RequestMethod.POST || method == RequestMethod.PUT) {
           Byte[] requestdata = Encoding.ASCII.GetBytes(json);
           request.ContentLength = requestdata.Length;
@@ -100,9 +139,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
             }
           }
         } catch (Exception e) {
-          Helper.WriteError("Konnte keine Verbindung zum Razzbery Server herstellen. Resource: \"" + this.server + address + "\" Fehler: " + e.Message);
-          return null;
-          //throw new Exceptions.ConnectionException("Konnte keine Verbindung zum Razzbery Server herstellen: " + e.Message);
+          throw new WebException("Error while uploading to Scal. Resource: \"" + this.config["general"]["server"] + address + "\" Method: " + method + " Data: " + json + " Fehler: " + e.Message);
         }
       }
       return ret;

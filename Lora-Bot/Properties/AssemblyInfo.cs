@@ -32,9 +32,10 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.0")]
-[assembly: AssemblyFileVersion("1.2.0")]
+[assembly: AssemblyVersion("1.3.0")]
+[assembly: AssemblyFileVersion("1.3.0")]
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
+ * 1.3.0 Scral now get its config from configfile, lora now want to get battery as [0-9].[0-9]{2} value
  */

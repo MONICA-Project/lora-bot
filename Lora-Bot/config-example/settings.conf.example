@@ -1,4 +1,4 @@
-﻿[logging]
+[logging]
 path=/var/log/lorabot.log
 
 [lora]

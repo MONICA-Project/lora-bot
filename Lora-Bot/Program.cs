@@ -29,7 +29,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
     }
 
     private void LoraDataUpdate(Object sender, Iot.Lora.Events.DeviceUpdateEvent e) {
-      Console.WriteLine("-> Lora [" + e.UpdateTime + "]: " + e.Parent.ToString());
+      Console.WriteLine("-> Lora " + e.Parent.ToString());
     }
 
   }

@@ -18,7 +18,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
 
     protected override void Connect() {
       this.mqtt = ABackend.GetInstance(this.config["settings"], ABackend.BackendType.Data);
-      Console.WriteLine("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.Connect()");
+      Console.WriteLine("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.Connect");
       this.mqttconnect = true;
     }
 
@@ -28,7 +28,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
         this.mqtt.Dispose();
       }
       this.mqtt = null;
-      Console.WriteLine("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.Disconnect()");
+      Console.WriteLine("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.Disconnect");
     }
 
     public override void EventLibSetter() {
@@ -46,14 +46,14 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
             topic = "lora/" + sensor.MqttTopic();
             data = sensor.ToJson();
           }
-          Console.WriteLine(topic);
-          Console.WriteLine(data);
           if (topic != "" && data != "") {
             ((ADataBackend)this.mqtt).Send(topic, data);
             this.Update?.Invoke(this, new MqttEvent(topic, data));
           }
         }
-      } catch { }
+      } catch (Exception e) {
+        Helper.WriteError("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.LibUpadteThread: " + e.Message);
+      }
     }      
   }
 }

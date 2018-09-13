@@ -18,7 +18,10 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
       if (this.config.ContainsKey("general") && this.config["general"].ContainsKey("path")) {
         this.filename = this.config["general"]["path"];
         this.file = new StreamWriter(this.filename, true);
+      } else {
+        throw new ArgumentException("Setting section [general] is missing or its value path");
       }
+
     }
 
     public override void EventLibSetter() {
