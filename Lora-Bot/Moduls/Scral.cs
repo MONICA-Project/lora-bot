@@ -7,7 +7,7 @@ using BlubbFish.Utils;
 using BlubbFish.Utils.IoT.Bots;
 using BlubbFish.Utils.IoT.Bots.Moduls;
 using Fraunhofer.Fit.Iot.Lora;
-using Fraunhofer.Fit.Iot.Lora.Devices;
+using Fraunhofer.Fit.Iot.Lora.Trackers;
 using Fraunhofer.Fit.Iot.Lora.Events;
 using LitJson;
 
@@ -44,34 +44,34 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     }
 
     public override void EventLibSetter() {
-      this.library.Update += this.HandleLibUpdate;
+      this.library.DataUpdate += this.HandleLibUpdate;
     }
 
     protected override void LibUpadteThread(Object state) {
       try {
-        DeviceUpdateEvent e = state as DeviceUpdateEvent;
-        LoraClient l = (LoraClient)e.Parent;
-        if (!this.nodes.Contains(l.Name)) {
-          this.SendRegister(l);
-          this.nodes.Add(l.Name);
+        if (state is DataUpdateEvent data) {
+          if (!this.nodes.Contains(data.Name)) {
+            this.SendRegister(data);
+            this.nodes.Add(data.Name);
+          }
+          this.SendUpdate(data);
         }
-        this.SendUpdate(l);
       } catch (Exception e) {
         Helper.WriteError("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral.LibUpadteThread: " + e.Message);
       }
     }
 
-    private void SendUpdate(LoraClient l) {
-      if (l.Gps.Fix) {
+    private void SendUpdate(DataUpdateEvent data) {
+      if (data.Gps.Fix) {
         Dictionary<String, Object> d = new Dictionary<String, Object> {
           { "type", "uwb" },
-          { "tagId", l.Name },
+          { "tagId", data.Name },
           { "timestamp", DateTime.Now.ToString("o") },
-          { "lat", l.Gps.Latitude },
-          { "lon", l.Gps.Longitude },
-          { "bearing", l.Rssi },
-          { "herr", l.Gps.Hdop },
-          { "battery_level", l.Snr }
+          { "lat", data.Gps.Latitude },
+          { "lon", data.Gps.Longitude },
+          { "bearing", data.Rssi },
+          { "herr", data.Gps.Hdop },
+          { "battery_level", data.Snr }
         };
         try {
           String addr = this.config["update"]["addr"];
@@ -81,17 +81,17 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
           }
         } catch (Exception e) {
           Helper.WriteError("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral.SendUpdate: " + e.Message);
-          this.SendRegister(l);
+          this.SendRegister(data);
         }
       }
     }
 
-    private void SendRegister(LoraClient l) {
+    private void SendRegister(DataUpdateEvent data) {
       Dictionary<String, Object> d = new Dictionary<String, Object> {
         { "device", "wearable" },
         { "sensor", "tag" },
         { "type", "uwb" },
-        { "tagId", l.Name },
+        { "tagId", data.Name },
         { "timestamp", DateTime.Now.ToString("o") },
         { "unitOfMeasurements", "meters" },
         { "observationType", "propietary" },

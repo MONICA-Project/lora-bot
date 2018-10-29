@@ -32,23 +32,17 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     }
 
     public override void EventLibSetter() {
-      this.library.Update += this.HandleLibUpdate;
+      this.library.DataUpdate += this.HandleLibUpdate;
+      this.library.StatusUpdate += this.HandleLibUpdate;
     }
 
     protected override void LibUpadteThread(Object state) {
       try {
         if (this.mqttconnect) {
-          DeviceUpdateEvent e = state as DeviceUpdateEvent;
-          String topic = "";
-          String data = "";
-          if (e.Parent.GetType().HasInterface(typeof(IMqtt))) {
-            IMqtt sensor = (IMqtt)e.Parent;
-            topic = "lora/" + sensor.MqttTopic();
-            data = sensor.ToJson();
-          }
-          if (topic != "" && data != "") {
-            ((ADataBackend)this.mqtt).Send(topic, data);
-            this.Update?.Invoke(this, new MqttEvent(topic, data));
+          if(state.GetType().HasInterface(typeof(IMqtt))) {
+            IMqtt sensor = state as IMqtt;
+            ((ADataBackend)this.mqtt).Send("lora/" + sensor.MqttTopic(), sensor.ToJson());
+            this.Update?.Invoke(this, new MqttEvent("lora/" + sensor.MqttTopic(), sensor.ToJson()));
           }
         }
       } catch (Exception e) {

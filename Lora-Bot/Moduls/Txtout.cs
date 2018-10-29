@@ -4,7 +4,7 @@ using BlubbFish.Utils;
 using BlubbFish.Utils.IoT.Bots.Events;
 using BlubbFish.Utils.IoT.Bots.Moduls;
 using Fraunhofer.Fit.Iot.Lora;
-using Fraunhofer.Fit.Iot.Lora.Devices;
+using Fraunhofer.Fit.Iot.Lora.Trackers;
 using Fraunhofer.Fit.Iot.Lora.Events;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
@@ -25,14 +25,13 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     }
 
     public override void EventLibSetter() {
-      this.library.Update += this.HandleLibUpdate;
+      this.library.DataUpdate += this.HandleLibUpdate;
     }
 
     protected override void LibUpadteThread(Object state) {
       try {
-        DeviceUpdateEvent e = state as DeviceUpdateEvent;
-        if (e.Parent is LoraClient l) {
-          String s = l.Name + "," + l.Receivedtime.ToString("o") + "," + l.Gps.Latitude + "," + l.Gps.Longitude + ",https://www.google.de/maps?q=" + l.Gps.Latitude + "%2C" + l.Gps.Longitude + "," + l.Rssi + "," + l.PacketRssi + "," + l.Snr;
+        if(state is DataUpdateEvent data) {
+          String s = data.Name + "," + data.Receivedtime.ToString("o") + "," + data.Gps.Latitude + "," + data.Gps.Longitude + "," + data.Rssi + "," + data.PacketRssi + "," + data.Snr + ",https://www.google.de/maps?q=" + data.Gps.Latitude + "%2C" + data.Gps.Longitude;
           this.file.WriteLine(s);
           this.file.Flush();
           this.Update?.Invoke(this, new ModulEventArgs(this.filename, "Line", s, "TXTOUT"));
