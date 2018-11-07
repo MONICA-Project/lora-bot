@@ -32,8 +32,8 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.6.0")]
-[assembly: AssemblyFileVersion("1.6.0")]
+[assembly: AssemblyVersion("1.6.2")]
+[assembly: AssemblyFileVersion("1.6.2")]
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
@@ -43,4 +43,6 @@ using System.Runtime.InteropServices;
  * 1.5.0 Send over Mqtt the new status items and refactoring
  * 1.5.1 Dependencies in debian Packet cleaned
  * 1.6.0 Implement Height in LoraBot
+ * 1.6.1 Fixing parsing bug with linebreaks in Lora
+ * 1.6.2 Adding a Test for Lora Binary
  */
