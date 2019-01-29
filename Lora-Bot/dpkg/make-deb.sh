@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOMEDIR="/home/blubb"
+HOMEDIR=$HOME
 ROOT="$HOMEDIR/deb"
 OUTPUT="../bin/Release"
 

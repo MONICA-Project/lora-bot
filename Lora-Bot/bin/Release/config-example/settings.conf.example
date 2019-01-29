@@ -2,7 +2,57 @@
 path=/var/log/lorabot.log
 
 [lora]
+type=Draginolora
+pin_sspin=Pin06
+pin_dio0=Pin07
+pin_rst=Pin00
 frequency=868100000
 spreadingfactor=8
 signalbandwith=125000
 codingrate=6
+
+;[lora]
+;type=Ic880alora
+;pin_sspin=Pin10
+;pin_rst=Pin21
+;spichan=Channel0
+; Set Basic Frequencies
+;frequency0=867500000
+;frequency1=868500000
+; Set Per Virtual Interface IF0-7 (Freq means the offset to the basic frequency)
+;interface0enable=true
+;interface0chain=1
+;interface0frequency=-400000
+;interface1enable=true
+;interface1chain=1
+;interface1frequency=-200000
+;interface2enable=true
+;interface2chain=1
+;interface2frequency=0
+;interface3enable=true
+;interface3chain=0
+;interface3frequency=-400000
+;interface4enable=true
+;interface4chain=0
+;interface4frequency=-200000
+;interface5enable=true
+;interface5chain=0
+;interface5frequency=0
+;interface6enable=true
+;interface6chain=0
+;interface6frequency=200000
+;interface7enable=true
+;interface7chain=0
+;interface7frequency=400000
+; Virtual Interface IF8 Lora Interface
+;interface8enable=false
+;interface8chain=1
+;interface8frequency=-200000
+;lorabandwith=250000
+;loraspreadingfactor=7
+; Virtual Interface IF9 FSK Interface
+;interface9enable=false
+;interface9chain=1
+;interface9frequency=300000
+;fskbandwith=125000
+;fskdatarate=50000

@@ -2,7 +2,8 @@
 
 systemctl enable lorabot
 systemctl daemon-reload
-if [[ $(systemctl is-active lorabot || true) == "active" ]]
-then
-        service lorabot restart
+
+if [ -f /tmp/lorabot_service_runner ]; then
+    service lorabot start
+    rm /tmp/lorabot_service_runner
 fi

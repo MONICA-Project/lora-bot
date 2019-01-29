@@ -1,3 +1,7 @@
 #!/bin/bash
 
-service lorabot stop
+if [[ $(systemctl is-active lorabot || true) == "active" ]]
+then
+    touch /tmp/lorabot_service_runner
+    service lorabot stop
+fi

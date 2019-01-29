@@ -3,7 +3,7 @@ Version: x.x-x
 Section: base
 Priority: optional
 Architecture: any
-Depends: mono-runtime (>= 5.16.0)
+Depends: mono-runtime (>= 5.18), wiringpi (>= 2.46), libmono-posix4.0-cil (>= 5.18)
 Maintainer: BlubbFish <dev@blubbfish.net>
 Description: Lora-Bot
  Lora-Bot is a Lora gateway
