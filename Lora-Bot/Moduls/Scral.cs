@@ -4,10 +4,8 @@ using System.IO;
 using System.Net;
 using System.Text;
 using BlubbFish.Utils;
-using BlubbFish.Utils.IoT.Bots;
 using BlubbFish.Utils.IoT.Bots.Moduls;
 using Fraunhofer.Fit.Iot.Lora;
-using Fraunhofer.Fit.Iot.Lora.Trackers;
 using Fraunhofer.Fit.Iot.Lora.Events;
 using LitJson;
 
@@ -16,12 +14,25 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     private readonly List<String> nodes = new List<String>();
     public override event ModulEvent Update;
     private readonly Object getLock = new Object();
+    private readonly Boolean authRequired;
+    private String auth;
+
     public Scral(LoraController lib, InIReader settings) : base(lib, settings) {
-      if(!this.config.ContainsKey("general")) {
+      if (!this.config.ContainsKey("general")) {
         throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: Config section [general] not exist");
       }
-      if(!this.config["general"].ContainsKey("server")) {
+      if (!this.config["general"].ContainsKey("server")) {
         throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [general] value server not exist");
+      }
+      if (!this.config["general"].ContainsKey("user") && !this.config["general"].ContainsKey("pass")) {
+        this.authRequired = false;
+      } else if (!this.config["general"].ContainsKey("user")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [general] value user not exist");
+      } else if (!this.config["general"].ContainsKey("pass")) {
+        throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [general] value pass not exist");
+      } else {
+        this.auth = "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(this.config["general"]["user"] + ":" + this.config["general"]["pass"]));
+        this.authRequired = true;
       }
       if (!this.config.ContainsKey("update")) {
         throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: Config section [update] not exist");
@@ -41,6 +52,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
       if (!this.config["register"].ContainsKey("method")) {
         throw new ArgumentException("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Scral: In config section [register] value method not exist");
       }
+
     }
 
     public override void EventLibSetter() {
@@ -118,6 +130,9 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
       lock (this.getLock) {
         HttpWebRequest request = WebRequest.CreateHttp(this.config["general"]["server"] + address);
         request.Timeout = 2000;
+        if (this.authRequired) {
+          request.Headers.Add(HttpRequestHeader.Authorization, this.auth);
+        }
         if (method == RequestMethod.POST || method == RequestMethod.PUT) {
           Byte[] requestdata = Encoding.ASCII.GetBytes(json);
           request.ContentLength = requestdata.Length;
