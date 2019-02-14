@@ -15,7 +15,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     public override event ModulEvent Update;
     private readonly Object getLock = new Object();
     private readonly Boolean authRequired;
-    private String auth;
+    private readonly String auth;
 
     public Scral(LoraController lib, InIReader settings) : base(lib, settings) {
       if (!this.config.ContainsKey("general")) {
