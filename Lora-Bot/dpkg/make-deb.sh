@@ -33,9 +33,9 @@ cp lorabot.service $SYSTEMD
 chmod 644 $SYSTEMD/lorabot.service
 
 cp $OUTPUT/*.exe $EXEC/
-cp $OUTPUT/gpio.2.44 $EXEC/
-cp $OUTPUT/libwiringPi.so.2.44 $EXEC/
-find $OUTPUT -name \*.dll ! -name Mono.Posix.dll -exec cp {} $EXEC/ \;
+#cp $OUTPUT/gpio.2.44 $EXEC/
+#cp $OUTPUT/libwiringPi.so.2.44 $EXEC/
+find $OUTPUT -name \*.dll -exec cp {} $EXEC/ \;
 chmod 644 $EXEC/*
 chmod 755 $EXEC
 

@@ -100,12 +100,8 @@
     <None Include="dpkg\prerm" />
     <None Include="dpkg\lorabot-logrotate" />
     <None Include="dpkg\lorabot.service" />
-    <None Include="gpio.2.44">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libwiringPi.so.2.44">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="gpio.2.44" />
+    <None Include="libwiringPi.so.2.44" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
