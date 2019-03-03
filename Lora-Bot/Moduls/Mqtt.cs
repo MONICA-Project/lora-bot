@@ -1,12 +1,10 @@
 ﻿using System;
 using BlubbFish.Utils;
-using BlubbFish.Utils.IoT.Bots;
 using BlubbFish.Utils.IoT.Bots.Events;
 using BlubbFish.Utils.IoT.Bots.Moduls;
 using BlubbFish.Utils.IoT.Connector;
 using BlubbFish.Utils.IoT.Interfaces;
 using Fraunhofer.Fit.Iot.Lora;
-using Fraunhofer.Fit.Iot.Lora.Events;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
   class Mqtt : Mqtt<LoraController> {
@@ -33,6 +31,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
 
     public override void EventLibSetter() {
       this.library.DataUpdate += this.HandleLibUpdate;
+      this.library.PanicUpdate += this.HandleLibUpdate;
       this.library.StatusUpdate += this.HandleLibUpdate;
     }
 

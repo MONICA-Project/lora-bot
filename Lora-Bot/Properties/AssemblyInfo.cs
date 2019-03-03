@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LoraDisplay")]
-[assembly: AssemblyCopyright("Copyright ©  2018 - 17.02.2019")]
+[assembly: AssemblyCopyright("Copyright ©  2018 - 03.03.2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,8 +32,8 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.7.2")]
-[assembly: AssemblyFileVersion("1.7.2")]
+[assembly: AssemblyVersion("1.7.3")]
+[assembly: AssemblyFileVersion("1.7.3")]
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
@@ -48,4 +48,5 @@ using System.Runtime.InteropServices;
  * 1.7.0 Adding IC800A Lora-Reciever
  * 1.7.1 Fixing binary data transmission & fixing Scral Plugin
  * 1.7.2 Update to local librarys
+ * 1.7.3 Parsing new Status format and Panic Package
  */
