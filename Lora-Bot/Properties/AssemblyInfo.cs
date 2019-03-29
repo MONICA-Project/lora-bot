@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden
@@ -10,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LoraDisplay")]
-[assembly: AssemblyCopyright("Copyright ©  2018 - 03.03.2019")]
+[assembly: AssemblyCopyright("Copyright ©  2018 - 29.03.2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,8 +31,8 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.7.3")]
-[assembly: AssemblyFileVersion("1.7.3")]
+[assembly: AssemblyVersion("1.8.0")]
+[assembly: AssemblyFileVersion("1.8.0")]
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
@@ -49,4 +48,5 @@ using System.Runtime.InteropServices;
  * 1.7.1 Fixing binary data transmission & fixing Scral Plugin
  * 1.7.2 Update to local librarys
  * 1.7.3 Parsing new Status format and Panic Package
+ * 1.8.0 Add field that indicates when the last gps position was recieved, change all times to UTC
  */
