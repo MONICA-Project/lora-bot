@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Lora-Bot")]
-[assembly: AssemblyCopyright("Copyright ©  2018 - 14.04.2019")]
+[assembly: AssemblyCopyright("Copyright ©  2018 - 22.04.2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,8 +31,8 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.8.1")]
-[assembly: AssemblyFileVersion("1.8.1")]
+[assembly: AssemblyVersion("1.8.2")]
+[assembly: AssemblyFileVersion("1.8.2")]
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
@@ -50,4 +50,5 @@ using System.Runtime.InteropServices;
  * 1.7.3 Parsing new Status format and Panic Package
  * 1.8.0 Add field that indicates when the last gps position was recieved, change all times to UTC
  * 1.8.1 Add Hostname to MQTT, so you can see from witch device the data is recieved
+ * 1.8.2 Bugfix, create also an event for sending normal loradata when update panic
  */
