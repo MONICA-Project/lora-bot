@@ -29,6 +29,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
         this.ModulEvents();
         lora.DataUpdate += this.LoraDataUpdate;
         lora.StatusUpdate += this.LoraStatusUpdate;
+        lora.PanicUpdate += this.LoraPanicUpdate;
         this.WaitForShutdown();
         Console.WriteLine("after wait");
         this.ModulDispose();
@@ -47,13 +48,11 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
       }
     }
 
-    private void LoraStatusUpdate(Object sender, StatusUpdateEvent e) {
-      Console.WriteLine("-> Lora-Status: " + e.ToString());
-    }
+    private void LoraPanicUpdate(Object sender, PanicUpdateEvent e) => Console.WriteLine("-> Lora-Panic: " + e.ToString());
 
-    private void LoraDataUpdate(Object sender, DataUpdateEvent e) {
-      Console.WriteLine("-> Lora-Data: " + e.ToString());
-    }
+    private void LoraStatusUpdate(Object sender, StatusUpdateEvent e) => Console.WriteLine("-> Lora-Status: " + e.ToString());
+
+    private void LoraDataUpdate(Object sender, DataUpdateEvent e) => Console.WriteLine("-> Lora-Data: " + e.ToString());
 
   }
 }

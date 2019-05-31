@@ -1,17 +1,19 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
 [assembly: AssemblyTitle("Lora-Bot")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Program that runs on a device and process the Lora traffic from the Lora library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Fraunhofer FIT")]
 [assembly: AssemblyProduct("Lora-Bot")]
-[assembly: AssemblyCopyright("Copyright ©  2018 - 22.04.2019")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright ©  2018 - 31.05.2019")]
+[assembly: AssemblyTrademark("Fraunhofer FIT, BlubbFish")]
 [assembly: AssemblyCulture("")]
+[assembly: NeutralResourcesLanguage("de-DE")]
 
 // Durch Festlegen von ComVisible auf FALSE werden die Typen in dieser Assembly
 // für COM-Komponenten unsichtbar.  Wenn Sie auf einen Typ in dieser Assembly von
@@ -31,8 +33,8 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.8.2")]
-[assembly: AssemblyFileVersion("1.8.2")]
+[assembly: AssemblyVersion("1.8.3")]
+[assembly: AssemblyFileVersion("1.8.3")]
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
@@ -51,4 +53,5 @@ using System.Runtime.InteropServices;
  * 1.8.0 Add field that indicates when the last gps position was recieved, change all times to UTC
  * 1.8.1 Add Hostname to MQTT, so you can see from witch device the data is recieved
  * 1.8.2 Bugfix, create also an event for sending normal loradata when update panic
+ * 1.8.3 Update to changed ConnectorDataMqtt and remove Scral from code, because its an own project now, that uses the mqtt-backend
  */

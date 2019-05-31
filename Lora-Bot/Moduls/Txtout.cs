@@ -24,9 +24,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
 
     }
 
-    public override void EventLibSetter() {
-      this.library.DataUpdate += this.HandleLibUpdate;
-    }
+    public override void EventLibSetter() => this.library.DataUpdate += this.HandleLibUpdate;
 
     protected override void LibUpadteThread(Object state) {
       try {

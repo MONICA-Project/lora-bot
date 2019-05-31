@@ -8,26 +8,9 @@ using Fraunhofer.Fit.Iot.Lora;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
   class Mqtt : Mqtt<LoraController> {
-    private Boolean mqttconnect = false;
-
     public override event ModulEvent Update;
 
     public Mqtt(LoraController lib, InIReader settings) : base(lib, settings) { }
-
-    protected override void Connect() {
-      this.mqtt = ABackend.GetInstance(this.config["settings"], ABackend.BackendType.Data);
-      Console.WriteLine("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.Connect");
-      this.mqttconnect = true;
-    }
-
-    protected override void Disconnect() {
-      this.mqttconnect = false;
-      if (this.mqtt != null) {
-        this.mqtt.Dispose();
-      }
-      this.mqtt = null;
-      Console.WriteLine("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.Disconnect");
-    }
 
     public override void EventLibSetter() {
       this.library.DataUpdate += this.HandleLibUpdate;
@@ -37,7 +20,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
 
     protected override void LibUpadteThread(Object state) {
       try {
-        if (this.mqttconnect) {
+        if (this.mqtt.IsConnected) {
           if(state.GetType().HasInterface(typeof(IMqtt))) {
             IMqtt sensor = state as IMqtt;
             ((ADataBackend)this.mqtt).Send("lora/" + sensor.MqttTopic(), sensor.ToJson());
