@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Fraunhofer FIT")]
 [assembly: AssemblyProduct("Lora-Bot")]
-[assembly: AssemblyCopyright("Copyright ©  2018 - 31.05.2019")]
+[assembly: AssemblyCopyright("Copyright ©  2018 - 08.07.2019")]
 [assembly: AssemblyTrademark("Fraunhofer FIT, BlubbFish")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("de-DE")]
@@ -33,8 +33,8 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder Standardwerte für die Build- und Revisionsnummern verwenden,
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.8.3")]
-[assembly: AssemblyFileVersion("1.8.3")]
+[assembly: AssemblyVersion("1.8.4")]
+[assembly: AssemblyFileVersion("1.8.4")]
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
@@ -54,4 +54,5 @@ using System.Runtime.InteropServices;
  * 1.8.1 Add Hostname to MQTT, so you can see from witch device the data is recieved
  * 1.8.2 Bugfix, create also an event for sending normal loradata when update panic
  * 1.8.3 Update to changed ConnectorDataMqtt and remove Scral from code, because its an own project now, that uses the mqtt-backend
+ * 1.8.4 Fixing a bug related to threaded working with data
  */
