@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.8.3
+
+### New Features
+
+* Add an Output for Panic Events
+
+### Bugfixes
+
+* Implement the new ConnectorDataMqtt
+
+### Changes
+
+* Remove Scral and the Configfile, because its an own Project
+
 ## 1.8.2
 
 ### New Features
