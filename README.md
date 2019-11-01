@@ -29,7 +29,7 @@ This projects depends on some librarys:
 * BlubbFish.Utils.IoT.Bots ([Bot-Utils](http://git.blubbfish.net/vs_utils/Bot-Utils))
 * BlubbFish.Utils.IoT.Connector.Data.Mqtt ([ConnectorDataMqtt](http://git.blubbfish.net/vs_utils/ConnectorDataMqtt))
 * BlubbFish.Utils.IoT.Interfaces ([Iot-Interfaces](http://git.blubbfish.net/vs_utils/Iot-Interfaces))
-* Fraunhofer.Fit.Iot.Lora ([Lora](https://gitlab.fit.fraunhofer.de/monica/lora-gateway/lora))
+* Fraunhofer.Fit.Iot.Lora ([Lora](https://github.com/MONICA-Project/lora))
 
 #### External
 * litjson
