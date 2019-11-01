@@ -98,6 +98,8 @@
     <None Include="dpkg\lorabot.service" />
     <None Include="gpio.2.44" />
     <None Include="libwiringPi.so.2.44" />
+	<None Include="..\CHANGELOG.md" />
+	<None Include="..\README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
