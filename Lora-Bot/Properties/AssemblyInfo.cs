@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿#if !NETCOREAPP
+using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
@@ -10,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Fraunhofer FIT")]
 [assembly: AssemblyProduct("Lora-Bot")]
-[assembly: AssemblyCopyright("Copyright ©  2018 - 08.07.2019")]
+[assembly: AssemblyCopyright("Copyright © BlubbFish 2018 - 08.07.2019")]
 [assembly: AssemblyTrademark("Fraunhofer FIT, BlubbFish")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("de-DE")]
@@ -35,6 +36,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.8.4")]
 [assembly: AssemblyFileVersion("1.8.4")]
+#endif
 /*
  * 1.1.0 Update Scral addresses
  * 1.2.0 Run Module Events in threads so that one Module can not block others, TXTOut now appends to the logfile
