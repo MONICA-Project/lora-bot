@@ -13,15 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils_Core", "..\Utils\Util
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "litjson_Core", "..\Librarys\litjson\litjson\litjson_Core.csproj", "{75ED402F-92D6-43DA-B7DE-FBB65E8A327A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swan", "..\Librarys\RaspberryIO_26\Swan\Swan.csproj", "{A3E6FFF4-751E-4F1D-A7B3-AB06A7381E51}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swan.Lite", "..\Librarys\RaspberryIO_26\Swan.Lite\Swan.Lite.csproj", "{CBD456D3-D3E3-4197-998C-B2F8CDD4F822}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unosquare.RaspberryIO", "..\Librarys\RaspberryIO_26\Unosquare.RaspberryIO\Unosquare.RaspberryIO.csproj", "{C9C54488-2712-47BC-AACD-1BAD4551C15D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unosquare.RaspberryIO.Abstractions", "..\Librarys\RaspberryIO_26\Unosquare.RaspberryIO.Abstractions\Unosquare.RaspberryIO.Abstractions.csproj", "{DE99DB1B-6E32-4F04-94CD-F210647302EB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unosquare.WiringPi", "..\Librarys\RaspberryIO_26\Unosquare.WiringPi\Unosquare.WiringPi.csproj", "{5B05D050-96EC-447C-9780-4078511B3C7F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConnectorDataMqtt_Core", "..\Utils\ConnectorDataMqtt\ConnectorDataMqtt\ConnectorDataMqtt_Core.csproj", "{2711D97D-9371-47CF-97CB-D4A74F4A7193}"
 EndProject
@@ -30,6 +22,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils-IoT_Core", "..\Utils\Utils-IoT\Utils-IoT\Utils-IoT_Core.csproj", "{C4CE902A-8BBC-45A4-8074-9448DF5469DE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot-Utils_Core", "..\Utils\Bot-Utils\Bot-Utils\Bot-Utils_Core.csproj", "{3D449CEF-CF03-4D3B-A531-4B2DD7B52E88}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swan.Tiny", "..\Librarys\RaspberryIO_26\Swan.Tiny\Swan.Tiny.csproj", "{0842C808-DF6D-41A1-8A90-2FF9C14F2148}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unosquare.RaspberryIO", "..\Librarys\RaspberryIO_26\Unosquare.RaspberryIO\Unosquare.RaspberryIO.csproj", "{11BAD50E-CA85-4FC9-96D3-8B60778BB091}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unosquare.WiringPi", "..\Librarys\RaspberryIO_26\Unosquare.WiringPi\Unosquare.WiringPi.csproj", "{037664CC-0F00-4DFE-AD5F-19AF2DE3431F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,26 +55,10 @@ Global
 		{75ED402F-92D6-43DA-B7DE-FBB65E8A327A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75ED402F-92D6-43DA-B7DE-FBB65E8A327A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75ED402F-92D6-43DA-B7DE-FBB65E8A327A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3E6FFF4-751E-4F1D-A7B3-AB06A7381E51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3E6FFF4-751E-4F1D-A7B3-AB06A7381E51}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3E6FFF4-751E-4F1D-A7B3-AB06A7381E51}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3E6FFF4-751E-4F1D-A7B3-AB06A7381E51}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CBD456D3-D3E3-4197-998C-B2F8CDD4F822}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBD456D3-D3E3-4197-998C-B2F8CDD4F822}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CBD456D3-D3E3-4197-998C-B2F8CDD4F822}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CBD456D3-D3E3-4197-998C-B2F8CDD4F822}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9C54488-2712-47BC-AACD-1BAD4551C15D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9C54488-2712-47BC-AACD-1BAD4551C15D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9C54488-2712-47BC-AACD-1BAD4551C15D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9C54488-2712-47BC-AACD-1BAD4551C15D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE99DB1B-6E32-4F04-94CD-F210647302EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE99DB1B-6E32-4F04-94CD-F210647302EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE99DB1B-6E32-4F04-94CD-F210647302EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE99DB1B-6E32-4F04-94CD-F210647302EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B05D050-96EC-447C-9780-4078511B3C7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B05D050-96EC-447C-9780-4078511B3C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B05D050-96EC-447C-9780-4078511B3C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B05D050-96EC-447C-9780-4078511B3C7F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2711D97D-9371-47CF-97CB-D4A74F4A7193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2711D97D-9371-47CF-97CB-D4A74F4A7193}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2711D97D-9371-47CF-97CB-D4A74F4A7193}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -93,6 +75,18 @@ Global
 		{3D449CEF-CF03-4D3B-A531-4B2DD7B52E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D449CEF-CF03-4D3B-A531-4B2DD7B52E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D449CEF-CF03-4D3B-A531-4B2DD7B52E88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0842C808-DF6D-41A1-8A90-2FF9C14F2148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0842C808-DF6D-41A1-8A90-2FF9C14F2148}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0842C808-DF6D-41A1-8A90-2FF9C14F2148}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0842C808-DF6D-41A1-8A90-2FF9C14F2148}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11BAD50E-CA85-4FC9-96D3-8B60778BB091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11BAD50E-CA85-4FC9-96D3-8B60778BB091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11BAD50E-CA85-4FC9-96D3-8B60778BB091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11BAD50E-CA85-4FC9-96D3-8B60778BB091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{037664CC-0F00-4DFE-AD5F-19AF2DE3431F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{037664CC-0F00-4DFE-AD5F-19AF2DE3431F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{037664CC-0F00-4DFE-AD5F-19AF2DE3431F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{037664CC-0F00-4DFE-AD5F-19AF2DE3431F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

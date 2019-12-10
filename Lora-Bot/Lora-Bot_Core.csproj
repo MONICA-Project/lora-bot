@@ -44,6 +44,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="../CHANGELOG.md" />
+    <Content Include="../CONTRIBUTING.md" />
+    <Content Include="../LICENSE" />
+    <Content Include="../README.md" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
