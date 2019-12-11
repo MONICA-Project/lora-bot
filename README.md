@@ -33,6 +33,10 @@ This projects depends on some librarys:
 
 #### External
 * litjson
+* M2Mqtt
+* Unosquare Swan
+* Unosquare RaspberryIO
+* Unosquare WiringPI
 
 
 ### Test
