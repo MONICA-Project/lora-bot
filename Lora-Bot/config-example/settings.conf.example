@@ -2,14 +2,24 @@
 path=/var/log/lorabot.log
 
 ;[lora]
-;type=Draginolora
-;pin_sspin=Pin06
-;pin_dio0=Pin07
-;pin_rst=Pin00
-;frequency=868100000
-;spreadingfactor=8
-;signalbandwith=125000
-;codingrate=6
+;debug=true
+;type=Dragino
+;pin_sspin=Pin25
+;pin_dio0=Pin04
+;pin_rst=Pin17
+;spichan=Channel0
+;freq=867000000
+;sf=10
+;bw=125000
+;cr=7
+;;18 = 0x12
+;syncword=18
+;preamblelength=8
+;currentlimit=140
+;power=17
+;gain=0
+
+
 
 [lora]
 type=Ic880alora

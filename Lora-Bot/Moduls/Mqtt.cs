@@ -7,7 +7,7 @@ using BlubbFish.Utils.IoT.Interfaces;
 using Fraunhofer.Fit.Iot.Lora;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
-  class Mqtt : Mqtt<LoraController> {
+  /*class Mqtt : Mqtt<LoraController> {
     public override event ModulEvent Update;
 
     public Mqtt(LoraController lib, InIReader settings) : base(lib, settings) { }
@@ -31,5 +31,5 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
         Helper.WriteError("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls.Mqtt.LibUpadteThread: " + e.Message);
       }
     }      
-  }
+  }*/
 }

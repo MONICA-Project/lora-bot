@@ -1,46 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using BlubbFish.Utils;
 using BlubbFish.Utils.IoT.Bots;
+
 using Fraunhofer.Fit.Iot.Lora;
 using Fraunhofer.Fit.Iot.Lora.Events;
+using Fraunhofer.Fit.IoT.Bots.LoraBot.Parser;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
-  class Program : Bot<LoraController> {
+  class Program : Bot<LoraParser> {
     static void Main(String[] args) => new Program(args);
     public Program(String[] _) {
       InIReader.SetSearchPath(new List<String>() { "/etc/lorabot", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\lorabot" });
-      if (!InIReader.ConfigExist("settings")) {
+      if(!InIReader.ConfigExist("settings")) {
         Helper.WriteError("No settings.ini found. Abord!");
         return;
       }
       InIReader settings = InIReader.GetInstance("settings");
       this.logger.SetPath(settings.GetValue("logging", "path"));
-      if (settings.GetValue("lora","debug") == "true") {
-        LoraController lora = new LoraController(settings.GetSection("lora"), false);
-        lora.Dispose();
-      } else {
-        LoraController lora = new LoraController(settings.GetSection("lora"));
-        this.ModulLoader("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls", lora);
-        this.ModulInterconnect();
-        this.ModulEvents();
-        lora.DataUpdate += this.LoraDataUpdate;
-        lora.StatusUpdate += this.LoraStatusUpdate;
-        lora.PanicUpdate += this.LoraPanicUpdate;
-        this.WaitForShutdown();
-        Console.WriteLine("after wait");
-        this.ModulDispose();
-        Console.WriteLine("after dispose");
-        lora.Dispose();
-        Console.WriteLine("after loradisp");
-      }
+
+      LoraController lora = new LoraController(settings.GetSection("lora"));
+      LoraParser parser = new LoraParser();
+
+      lora.Received += parser.ReceivedPacket;
+
+      this.ModulLoader("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls", parser);
+      this.ModulInterconnect();
+      this.ModulEvents();
+
+      lora.Received += this.Lora_Received;
+      lora.Transmitted += this.Lora_Transmitted;
+
+      this.WaitForShutdown();
+      Console.WriteLine("after wait");
+
+      this.ModulDispose();
+      Console.WriteLine("after dispose");
+
+      lora.Dispose();
+      Console.WriteLine("after loradisp");
     }
 
-    private void LoraPanicUpdate(Object sender, PanicUpdateEvent e) => Console.WriteLine("-> Lora-Panic: " + e.ToString());
-
-    private void LoraStatusUpdate(Object sender, StatusUpdateEvent e) => Console.WriteLine("-> Lora-Status: " + e.ToString());
-
-    private void LoraDataUpdate(Object sender, DataUpdateEvent e) => Console.WriteLine("-> Lora-Data: " + e.ToString());
-
+    private void Lora_Transmitted(Object sender, TransmittedData e) => Console.WriteLine("-> " + e.ToString());
+    private void Lora_Received(Object sender, RecievedData e) => Console.WriteLine("<- " + e.ToString());
   }
 }

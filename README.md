@@ -53,8 +53,9 @@ To install dotnet on a Raspi:
 ```bash
 wget [download link]
 sudo mkdir /usr/share/dotnet
-export PATH=$PATH:/usr/share/dotnet/
 sudo tar zxf dotnet-runtime-3.1.0-linux-arm.tar.gz -C /usr/share/dotnet
+rm dotnet-runtime-3.1.0-linux-arm.tar.gz
+sudo ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet 
 ```
 
 ## Contributing

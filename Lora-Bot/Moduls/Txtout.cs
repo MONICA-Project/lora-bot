@@ -8,7 +8,7 @@ using Fraunhofer.Fit.Iot.Lora.Trackers;
 using Fraunhofer.Fit.Iot.Lora.Events;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
-  public class Txtout : AModul<LoraController> {
+  /*public class Txtout : AModul<LoraController> {
     public override event ModulEvent Update;
 
     private readonly String filename;
@@ -43,5 +43,5 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
     }
 
     protected override void UpdateConfig() {}
-  }
+  }*/
 }
