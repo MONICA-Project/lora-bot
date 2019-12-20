@@ -5,33 +5,33 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
   public class StatusUpdateEvent : TrackerUpdateEvent {
     public Int32 FrequencyOffset {
-      get; private set;
+      get; set;
     }
     public String IpAddress {
-      get; private set;
+      get; set;
     }
     public Int32 Version {
-      get; private set;
+      get; set;
     }
     public Boolean WifiActive {
-      get; private set;
+      get; set;
     }
     public String WifiSsid {
-      get; private set;
+      get; set;
     }
     public String DeviceStatus {
-      get; private set;
+      get; set;
     }
 
 
-    public StatusUpdateEvent(Tracker tracker) : base(tracker) {
+    /*public StatusUpdateEvent(Tracker tracker) : base(tracker) {
       this.Version = tracker.Version;
       this.IpAddress = tracker.IpAddress;
       this.WifiSsid = tracker.WifiSsid;
       this.WifiActive = tracker.WifiActive;
       this.FrequencyOffset = tracker.FrequencyOffset;
       this.DeviceStatus = tracker.DeviceStatus.ToString();
-    }
+    }*/
 
     public override String MqttTopic() => "status/" + base.MqttTopic();
 

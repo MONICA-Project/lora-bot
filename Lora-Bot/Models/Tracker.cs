@@ -6,7 +6,7 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Events;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
   public class Tracker {
-    private enum ParseType {
+    /*private enum ParseType {
       Update,
       Panic
     }
@@ -16,9 +16,9 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
     public delegate void UpdateStatusEvent(Object sender, StatusUpdateEvent e);
     public event UpdateDataEvent DataUpdate;
     public event UpdatePanicEvent PanicUpdate;
-    public event UpdateStatusEvent StatusUpdate;
+    public event UpdateStatusEvent StatusUpdate;*/
 
-    public Int32 Bandwidth {
+    /*public Int32 Bandwidth {
       get; private set;
     }
     public Double BatteryLevel {
@@ -101,10 +101,10 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
       Shutdown
     }
 
-    public Tracker() => this.Gps = new GpsInfo();
+    public Tracker() => this.Gps = new GpsInfo();*/
 
     #region Private Parsers and Helpers
-    private void Parse(Byte[] data, ParseType dataType) {
+    /*private void Parse(Byte[] data, ParseType dataType) {
       if(data.Length == 21) {
         this.Name = GetName(data);
         Single lat = BitConverter.ToSingle(data, 3);
@@ -213,11 +213,11 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
     public void SetStatus(LoraClientEvent e, String textStatus) {
       this.SetUpdate(e);
       this.ParseStatus(textStatus);
-    }
+    }*/
     #endregion
 
     #region Static Functions
-    public static Boolean CheckPacket(String message) {
+    /*public static Boolean CheckPacket(String message) {
       String[] m;
       if(message.Contains("\r\n")) {
         m = message.Split(new String[] { "\r\n" }, StringSplitOptions.None);
@@ -253,7 +253,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
         return ret[1] == 0 ? System.Text.Encoding.ASCII.GetString(new Byte[] { ret[0] }).Trim() : System.Text.Encoding.ASCII.GetString(ret).Trim();
       }
       return "";
-    }
+    }*/
     #endregion
   }
 }

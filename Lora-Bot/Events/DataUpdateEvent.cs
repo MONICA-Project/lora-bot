@@ -5,10 +5,10 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
   public class DataUpdateEvent : TrackerUpdateEvent {
     public GpsUpdateEvent Gps {
-      get; private set;
+      get; set;
     }
 
-    public DataUpdateEvent(Tracker tracker) : base(tracker) => this.Gps = new GpsUpdateEvent(tracker.Gps);
+    //public DataUpdateEvent(Tracker tracker) : base(tracker) => this.Gps = new GpsUpdateEvent(tracker.Gps);
 
     public override String MqttTopic() => "data/" + base.MqttTopic();
 

@@ -6,6 +6,7 @@ using BlubbFish.Utils.IoT.Bots;
 
 using Fraunhofer.Fit.Iot.Lora;
 using Fraunhofer.Fit.Iot.Lora.Events;
+using Fraunhofer.Fit.IoT.Bots.LoraBot.Events;
 using Fraunhofer.Fit.IoT.Bots.LoraBot.Parser;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
@@ -29,7 +30,9 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
       this.ModulInterconnect();
       this.ModulEvents();
 
-      lora.Received += this.Lora_Received;
+      parser.DataUpdate += this.Lora_Parsed;
+      parser.PanicUpdate += this.Lora_Parsed;
+      parser.StatusUpdate += this.Lora_Parsed;
       lora.Transmitted += this.Lora_Transmitted;
 
       this.WaitForShutdown();
@@ -43,6 +46,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
     }
 
     private void Lora_Transmitted(Object sender, TransmittedData e) => Console.WriteLine("-> " + e.ToString());
-    private void Lora_Received(Object sender, RecievedData e) => Console.WriteLine("<- " + e.ToString());
+    private void Lora_Parsed(Object sender, TrackerUpdateEvent e) => Console.WriteLine("<- " + e.ToString());
   }
 }

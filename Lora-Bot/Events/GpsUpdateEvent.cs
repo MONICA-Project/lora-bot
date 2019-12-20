@@ -1,25 +1,34 @@
 ﻿using System;
 
-using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
-
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
   public class GpsUpdateEvent : UpdateEventHelper {
+    #region GPS-Fields
     public Boolean Fix {
-      get; private set;
+      get; set;
     }
+
     public Double Hdop {
-      get; private set;
+      get; set;
     }
+
     public Double Height {
-      get; private set;
+      get; set;
     }
+
     public Double Latitude {
-      get; private set;
+      get; set;
     }
+
     public Double Longitude {
-      get; private set;
+      get; set;
     }
-    public Double LastLatitude {
+    
+    public DateTime Time {
+      get; set;
+    }
+    #endregion
+    //Should do by client
+    /*public Double LastLatitude {
       get; private set;
     }
     public Double LastLongitude {
@@ -27,12 +36,9 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     }
     public DateTime LastGPSPos {
       get; private set;
-    }
-    public DateTime Time {
-      get; private set;
-    }
+    }*/
 
-    public GpsUpdateEvent(GpsInfo gps) {
+    /*public GpsUpdateEvent(GpsInfo gps) {
       this.Fix = gps.Fix;
       this.Hdop = gps.Hdop;
       this.Height = gps.Height;
@@ -42,8 +48,10 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
       this.LastLatitude = gps.LastLatitude;
       this.LastLongitude = gps.LastLongitude;
       this.LastGPSPos = gps.LastGPSPos;
-    }
+    }*/
 
-    public override String ToString() => "Lat: " + this.Latitude + " [" + this.LastLatitude + "] Lon: " + this.Longitude + " [" + this.LastLongitude + "] Height: " + this.Height + " -- Time: " + this.Time + " HDOP: " + this.Hdop + " Fix: " + this.Fix;
+    //public override String ToString() => "Lat: " + this.Latitude + " [" + this.LastLatitude + "] Lon: " + this.Longitude + " [" + this.LastLongitude + "] Height: " + this.Height + " -- Time: " + this.Time + " HDOP: " + this.Hdop + " Fix: " + this.Fix;
+
+    public override String ToString() => "Lat: " + this.Latitude + " Lon: " + this.Longitude + " Height: " + this.Height + " -- Time: " + this.Time + " HDOP: " + this.Hdop + " Fix: " + this.Fix;
   }
 }

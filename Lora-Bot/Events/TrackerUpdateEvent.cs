@@ -4,24 +4,44 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
   public class TrackerUpdateEvent : UpdateEventHelper {
+    #region General Tracker data
     public String Name {
-      get; private set;
+      get; set;
     }
+
+    public Double BatteryLevel {
+      get; set;
+    }
+    #endregion
+
+    #region Global Lora Data
+    public Double Rssi {
+      get; set;
+    }
+
+    public Double Snr {
+      get; set;
+    }
+
     public Double PacketRssi {
       get; private set;
     }
-    public Double Rssi {
-      get; private set;
+
+    public String Crcstatus {
+      get; set;
     }
-    public Double Snr {
-      get; private set;
-    }
+
     public DateTime Receivedtime {
-      get; private set;
+      get; set;
     }
-    public Double BatteryLevel {
-      get; private set;
+    #endregion
+
+    #region Dragino Special Data
+    public Double Freqerror {
+      get; set;
     }
+    #endregion
+
     public Byte Recieverradio {
       get; private set;
     }
@@ -40,9 +60,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     public Byte Spreadingfactor {
       get; private set;
     }
-    public String Crcstatus {
-      get; private set;
-    }
     public UInt16 Calculatedcrc {
       get; private set;
     }
@@ -57,7 +74,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     }
     public String Host => Environment.MachineName;
 
-    public TrackerUpdateEvent(Tracker tracker) {
+    /*public TrackerUpdateEvent(Tracker tracker) {
       this.PacketRssi = tracker.PacketRssi;
       this.Rssi = tracker.Rssi;
       this.Snr = tracker.Snr;
@@ -75,7 +92,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
       this.Snrmax = tracker.SnrMax;
       this.Snrmin = tracker.SnrMin;
       this.Time = tracker.Time;
-    }
+    }*/
 
     public override String MqttTopic() => base.MqttTopic() + this.Name;
 

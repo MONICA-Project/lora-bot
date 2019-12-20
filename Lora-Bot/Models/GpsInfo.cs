@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
-  public class GpsInfo {
+  /*public class GpsInfo {
     public Double Latitude {
       get; private set;
     }
@@ -84,5 +84,5 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
         this.LastGPSPos = DateTime.UtcNow;
       }
     }
-  }
+  }*/
 }
