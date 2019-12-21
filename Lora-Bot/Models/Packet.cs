@@ -5,7 +5,7 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Events;
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
   public class Packet {
 
-    protected void SetLoraData(RecievedData e, TrackerUpdateEvent data) {
+    protected void SetLoraData(RecievedData e, TrackerUpdateEvent tracker) {
       /*if(e is Ic800ALoraClientEvent) {
         Ic800ALoraClientEvent ic = e as Ic800ALoraClientEvent;
         this.Bandwidth = ic.Bandwidth;
@@ -23,12 +23,12 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
       }*/
       if(e is DragionoRecievedObj) {
         DragionoRecievedObj dragino = e as DragionoRecievedObj;
-        data.Freqerror = dragino.FreqError;
+        tracker.Freqerror = dragino.FreqError;
       }
-      data.Rssi = e.Rssi;
-      data.Snr = e.Snr;
-      data.Crcstatus = e.Crc ? "Ok" : "Bad";
-      data.Receivedtime = e.RecievedTime;
+      tracker.Rssi = e.Rssi;
+      tracker.Snr = e.Snr;
+      tracker.Crcstatus = e.Crc ? "Ok" : "Bad";
+      tracker.Receivedtime = e.RecievedTime;
     }
   }
 }

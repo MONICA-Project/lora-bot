@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
+using BlubbFish.Utils;
 
 using Fraunhofer.Fit.Iot.Lora.Events;
 using Fraunhofer.Fit.IoT.Bots.LoraBot.Events;
@@ -9,6 +12,9 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
   public class LoraParser {
+    private readonly SortedDictionary<String, Tuple<Double, Double, DateTime>> oldmarkerpos = new SortedDictionary<String, Tuple<Double, Double, DateTime>>();
+    private readonly Object oldmarkerposlock = new Object();
+
     public delegate void UpdateDataEvent(Object sender, DataUpdateEvent e);
     public delegate void UpdatePanicEvent(Object sender, PanicUpdateEvent e);
     public delegate void UpdateStatusEvent(Object sender, StatusUpdateEvent e);
@@ -35,31 +41,36 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
 
     private async void StatusUpdates(Object sender, StatusUpdateEvent e) => await Task.Run(() => this.StatusUpdate?.Invoke(sender, e));
 
-    internal void ReceivedPacket(Object sender, RecievedData e) {
-      if(e.Data.Length == 21 && e.Data[0] == 'b' || e.Data[0] == 'p') {
-        //###### Binary Packet, starts with "b" or Panic Packet, starts with "p" #########
-        BinaryPacket p = this.ParseBinaryPacket(e.Data, e);
-        if(p.Type == BinaryPacket.Typ.Data) {
-          Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + e.Data.Length + "]|" + BitConverter.ToString(e.Data).Replace("-", " ") + "| RSSI:" + e.Rssi + " SNR:" + e.Snr);
-          this.DataUpdates(sender, p.Data);
-        } else if(p.Type == BinaryPacket.Typ.Panic) {
-          Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Panic [" + e.Data.Length + "]|" + BitConverter.ToString(e.Data).Replace("-", " ") + "| RSSI:" + e.Rssi + " SNR:" + e.Snr);
-          this.PanicUpdates(sender, p.Panic);
+    public void ReceivedPacket(Object sender, RecievedData data) {
+      try {
+
+        if(data.Data.Length == 21 && data.Data[0] == 'b' || data.Data[0] == 'p') {
+          //###### Binary Packet, starts with "b" or Panic Packet, starts with "p" #########
+          BinaryPacket p = this.ParseBinaryPacket(data.Data, data);
+          if(p.Type == BinaryPacket.Typ.Data) {
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+            this.DataUpdates(sender, p.Data);
+          } else if(p.Type == BinaryPacket.Typ.Panic) {
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Panic [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+            this.PanicUpdates(sender, p.Panic);
+          } else {
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| CRC:" + data.Crc);
+          }
+        } else if(data.Data.Length > 3 && data.Data[0] == 'd' && data.Data[1] == 'e' && data.Data[2] == 'b') {
+          //###### Debug Packet, three lines #############
+          DebugPacket p = this.ParseDebugPacket(data.Data, data);
+          if(p.Type == DebugPacket.Typ.Status) {
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Status |" + this.ToStringFilter(p.Text) + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+            this.StatusUpdates(sender, p.Status);
+          } else {
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Debug-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| CRC:" + data.Crc);
+          }
         } else {
-          Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + e.Data.Length + "]|" + BitConverter.ToString(e.Data).Replace("-", " ") + "| CRC:" + e.Crc);
+          //###### Every else Packet #############
+          Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Some other Packet! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| '" + this.ToStringFilter(data.Data) + "' RSSI:" + data.Rssi + " SNR:" + data.Snr);
         }
-      } else if(e.Data.Length > 3 && e.Data[0] == 'd' && e.Data[1] == 'e' && e.Data[2] == 'b') {
-        //###### Debug Packet, three lines #############
-        DebugPacket p = this.ParseDebugPacket(e.Data, e);
-        if(p.Type == DebugPacket.Typ.Status) {
-          Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Status |" + this.ToStringFilter(p.Text) + "| RSSI:" + e.Rssi + " SNR:" + e.Snr);
-          this.StatusUpdates(sender, p.Status);
-        } else {
-          Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Debug-Packet not Match! [" + e.Data.Length + "]|" + BitConverter.ToString(e.Data).Replace("-", " ") + "| CRC:" + e.Crc);
-        }
-      } else {
-        //###### Every else Packet #############
-        Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Some other Packet! [" + e.Data.Length + "]|" + BitConverter.ToString(e.Data).Replace("-", " ") + "| '" + this.ToStringFilter(e.Data) + "' RSSI:" + e.Rssi + " SNR:" + e.Snr);
+      } catch(Exception e) {
+        Helper.WriteError("Something Went wrong while Parsing " + e.Message + "\n" + e.StackTrace);
       }
     }
 
@@ -121,7 +132,22 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
       Single height = (Single)BitConverter.ToUInt16(data, 12) / 10;
       DateTime date = DateTime.TryParse(data[17].ToString().PadLeft(2, '0') + "." + data[18].ToString().PadLeft(2, '0') + "." + ((UInt16)(data[19] + 2000)).ToString().PadLeft(4, '0') + " " + data[14].ToString().PadLeft(2, '0') + ":" + data[15].ToString().PadLeft(2, '0') + ":" + data[16].ToString().PadLeft(2, '0'), out DateTime dv) ? dv : DateTime.MinValue;
       Single battery = ((Single)data[20] + 230) / 100;
-      return new BinaryPacket(name, typ, lat, lon, hdop, height, date, battery, recieveddata);
+      Tuple<Double, Double, DateTime> old = new Tuple<Double, Double, DateTime>(0, 0, DateTime.MinValue);
+      if(lat != 0 || lon != 0) {
+        lock(this.oldmarkerposlock) {
+          if(this.oldmarkerpos.ContainsKey(name)) {
+            this.oldmarkerpos[name] = new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now);
+          } else {
+            this.oldmarkerpos.Add(name, new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now));
+          }
+        }
+      }
+      lock(this.oldmarkerpos) {
+        if(this.oldmarkerpos.ContainsKey(name)) {
+          old = this.oldmarkerpos[name];
+        }
+      }
+      return new BinaryPacket(name, typ, lat, lon, hdop, height, date, battery, recieveddata, old);
     }
   }
 }

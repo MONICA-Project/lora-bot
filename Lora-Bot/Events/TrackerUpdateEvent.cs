@@ -1,7 +1,5 @@
 ﻿using System;
 
-using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
-
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
   public class TrackerUpdateEvent : UpdateEventHelper {
     #region General Tracker data
@@ -73,26 +71,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
       get; private set;
     }
     public String Host => Environment.MachineName;
-
-    /*public TrackerUpdateEvent(Tracker tracker) {
-      this.PacketRssi = tracker.PacketRssi;
-      this.Rssi = tracker.Rssi;
-      this.Snr = tracker.Snr;
-      this.Receivedtime = tracker.ReceivedTime;
-      this.Name = tracker.Name;
-      this.BatteryLevel = tracker.BatteryLevel;
-      this.Recieverradio = tracker.RecieverRadio;
-      this.Recieverinterface = tracker.RecieverInterface;
-      this.Frequency = tracker.Frequency;
-      this.Bandwidth = tracker.Bandwidth;
-      this.Codingrate = tracker.CodingRate;
-      this.Spreadingfactor = tracker.SpreadingFactor;
-      this.Crcstatus = tracker.CRCStatus;
-      this.Calculatedcrc = tracker.CalculatedCRC;
-      this.Snrmax = tracker.SnrMax;
-      this.Snrmin = tracker.SnrMin;
-      this.Time = tracker.Time;
-    }*/
 
     public override String MqttTopic() => base.MqttTopic() + this.Name;
 

@@ -6,7 +6,7 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Parser;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
   public class BinaryPacket : Packet {
-    public BinaryPacket(String name, LoraParser.Typ typ, Single lat, Single lon, Single hdop, Single height, DateTime date, Single battery, RecievedData recieveddata) {
+    public BinaryPacket(String name, LoraParser.Typ typ, Single lat, Single lon, Single hdop, Single height, DateTime date, Single battery, RecievedData recieveddata, Tuple<Double, Double, DateTime> old) {
       if(typ == LoraParser.Typ.Data) {
         this.Data = new DataUpdateEvent() {
           Name = name,
@@ -17,7 +17,10 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Models {
             Hdop = hdop,
             Height = height,
             Time = date,
-            Fix = lat != 0 || lon != 0
+            Fix = lat != 0 || lon != 0,
+            LastLatitude = old.Item1,
+            LastLongitude = old.Item2,
+            LastGPSPos = old.Item3
           }
         };
         this.Type = Typ.Data;
