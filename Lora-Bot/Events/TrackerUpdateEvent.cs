@@ -10,6 +10,8 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     public Double BatteryLevel {
       get; set;
     }
+
+    public String Host => Environment.MachineName;
     #endregion
 
     #region Global Lora Data
@@ -40,37 +42,47 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     }
     #endregion
 
-    public Byte Recieverradio {
-      get; private set;
-    }
-    public Byte Recieverinterface {
-      get; private set;
-    }
-    public UInt32 Frequency {
-      get; private set;
-    }
+    #region Ic880a Special Data
     public Int32 Bandwidth {
-      get; private set;
+      get; set;
     }
-    public Byte Codingrate {
-      get; private set;
-    }
-    public Byte Spreadingfactor {
-      get; private set;
-    }
+
     public UInt16 Calculatedcrc {
-      get; private set;
+      get; set;
     }
+
+    public Byte Codingrate {
+      get; set;
+    }
+
+    public UInt32 Frequency {
+      get; set;
+    }
+
+    public Byte Recieverinterface {
+      get; set;
+    }
+
+    public Byte Recieverradio {
+      get; set;
+    }
+
     public Double Snrmax {
-      get; private set;
+      get; set;
     }
+
     public Double Snrmin {
-      get; private set;
+      get; set;
     }
+
+    public Byte Spreadingfactor {
+      get; set;
+    }
+
     public UInt32 Time {
-      get; private set;
+      get; set;
     }
-    public String Host => Environment.MachineName;
+    #endregion
 
     public override String MqttTopic() => base.MqttTopic() + this.Name;
 
