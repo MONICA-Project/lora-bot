@@ -46,6 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="../doc/format.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="../CHANGELOG.md" />
     <Content Include="../CONTRIBUTING.md" />
     <Content Include="../LICENSE" />
