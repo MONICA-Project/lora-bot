@@ -1,6 +1,7 @@
 # Binary Format
 The data that goes through the air is a binary transmission with the length of 18 Byte.
 It contains two parts, a unique counter and the encrypted content.
+## General Format
 ```elm
 schema message {
 	counter : uint16_t;
@@ -8,12 +9,13 @@ schema message {
 }
 ```
 You need a secret for encrypt the data part in the message. This secret acts like an PSK so it must be 
-known to both sides of the communication. Here we assume `key = 0xDEADBEEF; counter = 0x0001`. 
-This both will be summated together and generate a sha2 `crypto = sha2(key + counter);`.
+known to both sides of the communication. This both will be summated together and generate a 
+sha2 `crypto = sha2(key + counter);`.
 
 Now we bitwise XOR our data block with the crypto sha2 value. `data = dataraw ^ crypto`. 
 We CUT crypto to the length of data.
 
+## Data Section
 ```elm
 schema data {
 	name : uint16_t; // [0..1]
@@ -31,10 +33,43 @@ schema data {
 	counter_crc: uint8_t; // [15]
 }
 ```
-As Example:  
-`crypro = 0xa7631ac2dfcc0c15e920797c8e25d2e7`  
+## Examples
+We calculate a crypto and recovery it.
+
+### Encryption
+#### Increment Counter
 ```elm 
-dataraw { 'A','A',55.234,6.9812,123.4,3.5,0.9,0b11101100,0x97 }
+counter = 0x0001;
 ```
-`dataraw = 0x4141004352050012980604D2785AEC97`  
-`data =    0xE6221A818DC90C0771267DAEF67F3E70`
+#### Calculate xorkey
+```elm 
+key = 0xDEADBEEF;
+shakey = sha256(key + counter);
+crypto = ToInt128(shakey); //Only use the last 128 bit of shakey
+crypro = 0xa7631ac2dfcc0c15e920797c8e25d2e7;
+```
+#### Create Datablock
+```elm 
+data { 'A','A',55.234,6.9812,123.4,3.5,0.9,0b11101100,0x97 }
+data = 0x4141004352050012980604D2785AEC97;
+```
+#### Calculate message
+```elm 
+datac = data ^ crypto;
+message = counter<<128 | datac;
+message = 0x0001E6221A818DC90C0771267DAEF67F3E70;
+```
+
+### Decryption
+#### Reading counter
+```elm 
+message = counter>>128;
+counter = 0x0001;
+```
+#### Calculating xorkey
+```elm 
+key = 0xDEADBEEF;
+shakey = sha256(key + counter);
+crypto = ToInt128(shakey); //Only use the last 128 bit of shakey
+crypro = 0xa7631ac2dfcc0c15e920797c8e25d2e7;
+```
