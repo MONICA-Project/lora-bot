@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="../doc/format.md" />
+    <Content Include="../doc/Binaryformat.md" />
   </ItemGroup>
 
   <ItemGroup>
