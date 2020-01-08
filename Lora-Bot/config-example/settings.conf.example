@@ -22,12 +22,14 @@ path=/var/log/lorabot.log
 ;[lora]
 ;debug=true
 ;type=Ic880a
-;pin_sspin=Pin10
-;pin_rst=Pin21
+;pin_sspin=8
+;pin_rst=5
 ;spichan=Channel0
 ; ## Set Basic Frequencies ##
 ;frequency0=867125000
+;radio0tx=true
 ;frequency1=868125000
+;radio1tx=true
 ; ## Set Per Virtual Interface IF0-7 (Freq means the offset to the basic frequency) ##
 ;interface0frequency=-375000
 ;interface0chain=0
