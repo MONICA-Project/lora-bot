@@ -27,9 +27,7 @@ path=/var/log/lorabot.log
 ;spichan=Channel0
 ; ## Set Basic Frequencies ##
 ;frequency0=867125000
-;radio0tx=true
 ;frequency1=868125000
-;radio1tx=true
 ; ## Set Per Virtual Interface IF0-7 (Freq means the offset to the basic frequency) ##
 ;interface0frequency=-375000
 ;interface0chain=0
@@ -38,7 +36,7 @@ path=/var/log/lorabot.log
 ;interface2frequency=125000
 ;interface2chain=0
 ;interface3frequency=375000
-;interface3chain=0
+,interface3chain=0
 ;interface4frequency=-375000
 ;interface4chain=1
 ;interface5frequency=-125000
@@ -48,16 +46,20 @@ path=/var/log/lorabot.log
 ;interface7frequency=375000
 ;interface7chain=1
 ; ## Virtual Interface IF8 Lora Interface ##
-;interface8frequency=-200000
-;interface8chain=1
+;interface8frequency=0
+;interface8chain=0
 ;lorabandwith=250000
-;loraspreadingfactor=7
+;loraspreadingfactor=10
 ; ## Virtual Interface IF9 FSK Interface ##
 ;interface9frequency=300000
 ;interface9chain=1
 ;fskbandwith=125000
 ;fskdatarate=50000
 ; ## General Settings ##
+;sendbw=125000
+;sendsf=10
+;sendcr=7
+;sendpreamble=8
 ;crc=true
 ;lorawan=false
 ;lbt_enable=false
