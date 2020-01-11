@@ -62,4 +62,3 @@ path=/var/log/lorabot.log
 ;sendpreamble=8
 ;crc=true
 ;lorawan=false
-;lbt_enable=false
