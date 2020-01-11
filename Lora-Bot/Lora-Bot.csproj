@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <Content Include="../doc/Binaryformat.md" />
+	<Content Include="../doc/Mqttformat.md" />
   </ItemGroup>
 
   <ItemGroup>

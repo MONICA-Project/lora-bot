@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -148,6 +149,29 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         }
       }
       return new BinaryPacket(name, typ, lat, lon, hdop, height, date, battery, recieveddata, old);
+    }
+
+    Byte[] key = new Byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+
+    private Byte[] DecodeData(Byte[] encoded) {
+      if(encoded.Length != 18) {
+        return encoded;
+      }
+      Byte[] decoded = new Byte[encoded.Length];
+      Byte[] binkey = new Byte[this.key.Length + 4];
+      for(Byte i = 0; i < 4; i++) {
+        binkey[i] = encoded[i];
+        decoded[i] = encoded[i];
+      }
+      for(Int32 i = 0; i < this.key.Length; i++) {
+        binkey[i + 4] = this.key[i];
+      }
+      SHA256 sha256Hash = SHA256.Create();
+      Byte[] crypto = sha256Hash.ComputeHash(binkey);
+      for(Int32 i = 0; i < encoded.Length-4; i++) {
+        decoded[i + 4] = (Byte)(encoded[i + 4] ^ crypto[crypto.Length - 1 - encoded.Length - 5 + i]);
+      }
+      return decoded;
     }
   }
 }
