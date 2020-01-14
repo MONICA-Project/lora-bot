@@ -11,7 +11,7 @@ schema message {
 ```
 You need a secret for encrypt the data part in the message. This secret acts like an PSK so it must be 
 known to both sides of the communication. This both will be summated together and generate a 
-sha2 `crypto = sha2(key + counter + name);`.
+sha2 `crypto = sha2(key<<32 | name<<16 | counter);`.
 
 Now we bitwise XOR our data block with the crypto sha2 value. `data = dataraw ^ crypto`. 
 We CUT crypto to the length of data.
@@ -57,10 +57,10 @@ name = 0x4141;
 ```
 #### Calculate xorkey
 ```elm 
-key = 0xDEADBEEF;
-shakey = sha256(key + counter + name);
+key = 0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF;
+shakey = sha256(key << 32 | name << 16 | counter);
 crypto = shakey & 0x000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-crypro = 0x4B2438D2FC98588CE47FD29E8E7D;
+crypro = 0x43557371C5CB113D83B20E337301;        
 ```
 #### Create Datablock
 ```elm 
@@ -70,13 +70,13 @@ data = 0x004352050012980604D2785AFC48;
 #### Calculate message
 ```elm 
 datac = data ^ crypto;
-datac = 0x4B676AD7FC8AC08AE0ADAAC47235;
+datac = 0x43162174C5D9893B876076698F49;
 message = counter << 128 | name<<112 | datac;
-message = 0x000141414B676AD7FC8AC08AE0ADAAC47235;
+message = 0x0001414143162174C5D9893B876076698F49;
 ```
 
 ### Decryption
-We get `message = 0x000141414B676AD7FC8AC08AE0ADAAC47235;` as message.
+We get `message = 0x0001414143162174C5D9893B876076698F49;` as message.
 #### Reading counter and name
 ```elm 
 counter = message >> 128;
@@ -87,15 +87,15 @@ name = 0x4141;
 ```
 #### Calculating xorkey
 ```elm 
-key = 0xDEADBEEF;
-shakey = sha256(key + counter + name);
+key = 0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF;
+shakey = sha256(key << 32 | name << 16 | counter);
 crypto = shakey & 0x000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-crypro = 0x4B2438D2FC98588CE47FD29E8E7D;
+crypro = 0x43557371C5CB113D83B20E337301; 
 ```
 ### Decrypting Message
 ```elm 
 datac = message & 0x00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-datac = 0x4B676AD7FC8AC08AE0ADAAC47235;
+datac = 0x43162174C5D9893B876076698F49;
 data = datac ^ crypto;
 data = 0x004352050012980604D2785AFC48;
 ```
