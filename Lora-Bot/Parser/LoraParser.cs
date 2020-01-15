@@ -46,9 +46,14 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
       try {
         if (data.Data.Length == 18) {
           Byte[] decoded = this.DecodeData(data.Data);
-          Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + decoded.Length + "]|" + BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-        }
-        if (data.Data.Length == 21 && data.Data[0] == 'b' || data.Data[0] == 'p') {
+          Byte crc = this.SHA256Calc(decoded[0..17])[0];
+          if(crc == decoded[17]) {
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data-En [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data-De [" + decoded.Length + "]|" + BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+          } else {
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "|" + BitConverter.ToString(decoded).Replace("-", " ") + "| CRC:" + data.Crc);
+          }
+        } else if (data.Data.Length == 21 && data.Data[0] == 'b' || data.Data[0] == 'p') {
           //###### Binary Packet, starts with "b" or Panic Packet, starts with "p" #########
           BinaryPacket p = this.ParseBinaryPacket(data.Data, data);
           if(p.Type == BinaryPacket.Typ.Data) {
@@ -157,34 +162,32 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
     Byte[] key = new Byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF };
 
     private Byte[] DecodeData(Byte[] encoded) {
-      Console.WriteLine("En: " + BitConverter.ToString(encoded).Replace("-", " "));
       Byte[] decoded = new Byte[encoded.Length];
       if (encoded.Length != 18) {
         return encoded;
       }
 
-      Byte[] binkey = new Byte[this.key.Length + 4];
+      Byte[] shakey = new Byte[this.key.Length + 4];
       for (Int32 i = 0; i < this.key.Length; i++) {
-        binkey[i] = this.key[i];
+        shakey[i] = this.key[i];
       }
-      binkey[this.key.Length + 0] = encoded[2];
-      binkey[this.key.Length + 1] = encoded[3];
-      binkey[this.key.Length + 2] = encoded[0];
-      binkey[this.key.Length + 3] = encoded[1];
+      for(Int32 i = 0; i < 4; i++) {
+        shakey[this.key.Length + i] = encoded[i];
+      }
 
-      Console.WriteLine("key: " + BitConverter.ToString(binkey).Replace("-", " "));
-
-      SHA256 sha256Hash = SHA256.Create();
-      Byte[] crypto = sha256Hash.ComputeHash(binkey);
-      sha256Hash.Dispose();
-
-      Console.WriteLine("sha: " + BitConverter.ToString(crypto).Replace("-", " "));
+      Byte[] crypto = this.SHA256Calc(shakey);
 
       for (Int32 i = 0; i < encoded.Length; i++) {
-        decoded[i] = i < 4 ? encoded[i] : (Byte)(encoded[i] ^ crypto[crypto.Length - 1 - encoded.Length - 1 + i]);
+        decoded[i] = i < 4 ? encoded[i] : (Byte)(encoded[i] ^ crypto[crypto.Length - encoded.Length + i]);
       }
-      Console.WriteLine("Ee: " + BitConverter.ToString(decoded).Replace("-", " "));
       return decoded;
+    }
+
+    private Byte[] SHA256Calc(Byte[] data) {
+      SHA256 hashfunct = SHA256.Create();
+      Byte[] sha = hashfunct.ComputeHash(data);
+      hashfunct.Dispose();
+      return sha;
     }
   }
 }
