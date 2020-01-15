@@ -26,9 +26,9 @@ schema data {
     hdop : uint8_t; // [11]
     status : bitfield : uint8_t { // [12]
         message_type : 1 // 0 = regular, 1 = eventbased
-        has_time : 1; // 0 = true, 1 = false
-        has_date : 1; // 0 = true, 1 = false
-        has_fix : 1; // 0 = true, 1 = false
+        has_time : 1; // 1 = true, 0 = false
+        has_date : 1; // 1 = true, 0 = false
+        has_fix : 1; // 1 = true, 0 = false
         satelites : 4; // uint5_t
     }
     sha: uint8_t; // [13]

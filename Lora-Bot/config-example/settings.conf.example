@@ -1,6 +1,10 @@
 [logging]
 path=/var/log/lorabot.log
 
+[general]
+key=DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF
+; MUST BE 32 BYTES in Hex!
+
 ;[lora]
 ;debug=true
 ;type=Dragino

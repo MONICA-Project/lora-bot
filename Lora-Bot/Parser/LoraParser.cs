@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +14,19 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
   public class LoraParser {
+    private Byte[] CryptoKey;
+
+    public LoraParser(String key) {
+      if(key == null || key.Length != 64) {
+        throw new ArgumentException("key is not a 64 Char String");
+      }
+      Byte[] k = Enumerable.Range(0, key.Length).Where(x => x % 2 == 0).Select(x => Convert.ToByte(key.Substring(x, 2), 16)).ToArray();
+      if(k.Length != 32) {
+        throw new Exception("key cant be converted to a 32 byte array");
+      }
+      this.CryptoKey = k;
+    }
+
     private readonly SortedDictionary<String, Tuple<Double, Double, DateTime>> oldmarkerpos = new SortedDictionary<String, Tuple<Double, Double, DateTime>>();
     private readonly Object oldmarkerposlock = new Object();
 
@@ -48,8 +62,8 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
           Byte[] decoded = this.DecodeData(data.Data);
           Byte crc = this.SHA256Calc(decoded[0..17])[0];
           if(crc == decoded[17]) {
-            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data-En [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data-De [" + decoded.Length + "]|" + BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + data.Data.Length + "] E|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| D|"+ BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+            BinaryPacket p = this.ParseBinaryPacket(decoded, data);
           } else {
             Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "|" + BitConverter.ToString(decoded).Replace("-", " ") + "| CRC:" + data.Crc);
           }
@@ -128,38 +142,55 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
     }
 
     private BinaryPacket ParseBinaryPacket(Byte[] data, RecievedData recieveddata) {
-      Typ typ = Typ.Unknown;
-      if(data[0] == 'b') {
-        typ = Typ.Data;
-      } else if(data[0] == 'p') {
-        typ = Typ.Panic;
-      }
-      String name = data[2] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[1] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[2], data[2] }).Trim();
-      Single lat = BitConverter.ToSingle(data, 3);
-      Single lon = BitConverter.ToSingle(data, 7);
-      Single hdop = (Single)data[11] / 10;
-      Single height = (Single)BitConverter.ToUInt16(data, 12) / 10;
-      DateTime date = DateTime.TryParse(data[17].ToString().PadLeft(2, '0') + "." + data[18].ToString().PadLeft(2, '0') + "." + ((UInt16)(data[19] + 2000)).ToString().PadLeft(4, '0') + " " + data[14].ToString().PadLeft(2, '0') + ":" + data[15].ToString().PadLeft(2, '0') + ":" + data[16].ToString().PadLeft(2, '0'), out DateTime dv) ? dv : DateTime.MinValue;
-      Single battery = ((Single)data[20] + 230) / 100;
-      Tuple<Double, Double, DateTime> old = new Tuple<Double, Double, DateTime>(0, 0, DateTime.MinValue);
-      if(lat != 0 || lon != 0) {
-        lock(this.oldmarkerposlock) {
-          if(this.oldmarkerpos.ContainsKey(name)) {
-            this.oldmarkerpos[name] = new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now);
-          } else {
-            this.oldmarkerpos.Add(name, new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now));
+      if(data.Length == 21) {
+        Typ typ = Typ.Unknown;
+        if(data[0] == 'b') {
+          typ = Typ.Data;
+        } else if(data[0] == 'p') {
+          typ = Typ.Panic;
+        }
+        String name = data[2] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[1] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[1], data[2] }).Trim();
+        Single lat = BitConverter.ToSingle(data, 3);
+        Single lon = BitConverter.ToSingle(data, 7);
+        Single hdop = (Single)data[11] / 10;
+        Single height = (Single)BitConverter.ToUInt16(data, 12) / 10;
+        DateTime date = DateTime.TryParse(data[17].ToString().PadLeft(2, '0') + "." + data[18].ToString().PadLeft(2, '0') + "." + ((UInt16)(data[19] + 2000)).ToString().PadLeft(4, '0') + " " + data[14].ToString().PadLeft(2, '0') + ":" + data[15].ToString().PadLeft(2, '0') + ":" + data[16].ToString().PadLeft(2, '0'), out DateTime dv) ? dv : DateTime.MinValue;
+        Single battery = ((Single)data[20] + 230) / 100;
+        Tuple<Double, Double, DateTime> old = new Tuple<Double, Double, DateTime>(0, 0, DateTime.MinValue);
+        if(lat != 0 || lon != 0) {
+          lock(this.oldmarkerposlock) {
+            if(this.oldmarkerpos.ContainsKey(name)) {
+              this.oldmarkerpos[name] = new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now);
+            } else {
+              this.oldmarkerpos.Add(name, new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now));
+            }
           }
         }
-      }
-      lock(this.oldmarkerpos) {
-        if(this.oldmarkerpos.ContainsKey(name)) {
-          old = this.oldmarkerpos[name];
+        lock(this.oldmarkerpos) {
+          if(this.oldmarkerpos.ContainsKey(name)) {
+            old = this.oldmarkerpos[name];
+          }
         }
+        return new BinaryPacket(name, typ, lat, lon, hdop, height, date, battery, recieveddata, old);
+      } else {
+        UInt16 counter = BitConverter.ToUInt16(data, 0);
+        String name = data[3] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[2] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[2], data[3] }).Trim();
+        Single lat = BitConverter.ToSingle(data, 4);
+        Single lon = BitConverter.ToSingle(data, 8);
+        Single height = (Single)BitConverter.ToUInt16(data, 12) / 10;
+        Single battery = ((Single)data[14] + 230) / 100;
+        Single hdop = (Single)data[15] / 10;
+        Typ typ = (data[16] & 0x80) != 0 ? Typ.Panic : Typ.Data;
+        Boolean has_time = (data[16] & 0x40) != 0 ? true : false;
+        Boolean has_date = (data[16] & 0x20) != 0 ? true : false;
+        Boolean has_fix = (data[16] & 0x10) != 0 ? true : false;
+        Byte sat = (Byte)(data[16] & 0x0F);
+        Boolean correct_if = recieveddata is Ic880aRecievedObj ? data[3] % 8 == ((Ic880aRecievedObj)recieveddata).Interface : true;
+        String hash = BitConverter.ToString(this.SHA256Calc(data)).Replace("-", "");
+        Console.WriteLine("counter: " + counter + " name: " + name + " lat: " + lat + " lon: " + lon + " height: " + height + " battery: " + battery + " hdop: " + hdop + " typ: " + typ + " has_time: " + has_time + " has_date: " + has_date + " has_fix: " + has_fix + " sat: " + sat + " cif: " + correct_if + " sha: " + hash);
+        return new BinaryPacket(name, typ, lat, lon, hdop, height, DateTime.Now, battery, recieveddata, new Tuple<Double, Double, DateTime>(0, 0, DateTime.MinValue));
       }
-      return new BinaryPacket(name, typ, lat, lon, hdop, height, date, battery, recieveddata, old);
     }
-
-    Byte[] key = new Byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF };
 
     private Byte[] DecodeData(Byte[] encoded) {
       Byte[] decoded = new Byte[encoded.Length];
@@ -167,12 +198,12 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         return encoded;
       }
 
-      Byte[] shakey = new Byte[this.key.Length + 4];
-      for (Int32 i = 0; i < this.key.Length; i++) {
-        shakey[i] = this.key[i];
+      Byte[] shakey = new Byte[this.CryptoKey.Length + 4];
+      for (Int32 i = 0; i < this.CryptoKey.Length; i++) {
+        shakey[i] = this.CryptoKey[i];
       }
       for(Int32 i = 0; i < 4; i++) {
-        shakey[this.key.Length + i] = encoded[i];
+        shakey[this.CryptoKey.Length + i] = encoded[i];
       }
 
       Byte[] crypto = this.SHA256Calc(shakey);

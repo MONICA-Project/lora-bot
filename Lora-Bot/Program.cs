@@ -21,9 +21,9 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
       InIReader settings = InIReader.GetInstance("settings");
       this.logger.SetPath(settings.GetValue("logging", "path"));
 
-      LoraController lora = new LoraController(settings.GetSection("lora"));
-      LoraParser parser = new LoraParser();
+      LoraParser parser = new LoraParser(settings.GetValue("general", "key"));
 
+      LoraController lora = new LoraController(settings.GetSection("lora"));
       lora.Received += parser.ReceivedPacket;
 
       this.ModulLoader("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls", parser);
