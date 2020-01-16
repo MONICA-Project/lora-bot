@@ -62,8 +62,14 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
           Byte[] decoded = this.DecodeData(data.Data);
           Byte crc = this.SHA256Calc(decoded[0..17])[0];
           if(crc == decoded[17]) {
-            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + data.Data.Length + "] E|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| D|"+ BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
             BinaryPacket p = this.ParseBinaryPacket(decoded, data);
+            if (p.Type == BinaryPacket.Typ.Data) {
+              Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + data.Data.Length + "] E|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| D|" + BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+              this.DataUpdates(sender, p.Data);
+            } else if (p.Type == BinaryPacket.Typ.Panic) {
+              Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Panic [" + data.Data.Length + "] E|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| D|" + BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
+              this.PanicUpdates(sender, p.Panic);
+            }
           } else {
             Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "|" + BitConverter.ToString(decoded).Replace("-", " ") + "| CRC:" + data.Crc);
           }
@@ -187,8 +193,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         Byte sat = (Byte)(data[16] & 0x0F);
         Boolean correct_if = recieveddata is Ic880aRecievedObj ? data[3] % 8 == ((Ic880aRecievedObj)recieveddata).Interface : true;
         String hash = BitConverter.ToString(this.SHA256Calc(data)).Replace("-", "");
-        Console.WriteLine("counter: " + counter + " name: " + name + " lat: " + lat + " lon: " + lon + " height: " + height + " battery: " + battery + " hdop: " + hdop + " typ: " + typ + " has_time: " + has_time + " has_date: " + has_date + " has_fix: " + has_fix + " sat: " + sat + " cif: " + correct_if + " sha: " + hash);
-        return new BinaryPacket(name, typ, lat, lon, hdop, height, DateTime.Now, battery, recieveddata, new Tuple<Double, Double, DateTime>(0, 0, DateTime.MinValue));
+        return new BinaryPacket(name, typ, lat, lon, hdop, height, battery, counter, has_time, has_date, has_fix, sat, correct_if, hash, recieveddata);
       }
     }
 

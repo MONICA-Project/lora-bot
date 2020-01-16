@@ -26,6 +26,10 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     public DateTime Time {
       get; set;
     }
+
+    public Byte Satelites {
+      get; set;
+    }
     #endregion
 
     [Obsolete("Should do by client")]
