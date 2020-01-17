@@ -14,7 +14,7 @@ using Fraunhofer.Fit.IoT.Bots.LoraBot.Models;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
   public class LoraParser {
-    private Byte[] CryptoKey;
+    private readonly Byte[] CryptoKey;
 
     public LoraParser(String key) {
       if(key == null || key.Length != 64) {
@@ -30,8 +30,8 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
     private readonly SortedDictionary<String, Tuple<Double, Double, DateTime>> oldmarkerpos = new SortedDictionary<String, Tuple<Double, Double, DateTime>>();
     private readonly Object oldmarkerposlock = new Object();
 
-    public delegate void UpdateDataEvent(Object sender, DataUpdateEvent e);
-    public delegate void UpdatePanicEvent(Object sender, PanicUpdateEvent e);
+    public delegate void UpdateDataEvent(Object sender, LocationUpdateEvent e);
+    public delegate void UpdatePanicEvent(Object sender, LocationUpdateEvent e);
     public delegate void UpdateStatusEvent(Object sender, StatusUpdateEvent e);
     public event UpdateDataEvent DataUpdate;
     public event UpdatePanicEvent PanicUpdate;
@@ -50,9 +50,9 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
       Unknown
     }
 
-    private async void DataUpdates(Object sender, DataUpdateEvent e) => await Task.Run(() => this.DataUpdate?.Invoke(sender, e));
+    private async void DataUpdates(Object sender, LocationUpdateEvent e) => await Task.Run(() => this.DataUpdate?.Invoke(sender, e));
 
-    private async void PanicUpdates(Object sender, PanicUpdateEvent e) => await Task.Run(() => this.PanicUpdate?.Invoke(sender, e));
+    private async void PanicUpdates(Object sender, LocationUpdateEvent e) => await Task.Run(() => this.PanicUpdate?.Invoke(sender, e));
 
     private async void StatusUpdates(Object sender, StatusUpdateEvent e) => await Task.Run(() => this.StatusUpdate?.Invoke(sender, e));
 
@@ -63,12 +63,12 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
           Byte crc = this.SHA256Calc(decoded[0..17])[0];
           if(crc == decoded[17]) {
             BinaryPacket p = this.ParseBinaryPacket(decoded, data);
-            if (p.Type == BinaryPacket.Typ.Data) {
+            if (p.Type == Typ.Data) {
               Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + data.Data.Length + "] E|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| D|" + BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-              this.DataUpdates(sender, p.Data);
-            } else if (p.Type == BinaryPacket.Typ.Panic) {
+              this.DataUpdates(sender, p.TransferData);
+            } else if (p.Type == Typ.Panic) {
               Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Panic [" + data.Data.Length + "] E|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| D|" + BitConverter.ToString(decoded).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-              this.PanicUpdates(sender, p.Panic);
+              this.PanicUpdates(sender, p.TransferData);
             }
           } else {
             Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "|" + BitConverter.ToString(decoded).Replace("-", " ") + "| CRC:" + data.Crc);
@@ -76,12 +76,12 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         } else if (data.Data.Length == 21 && data.Data[0] == 'b' || data.Data[0] == 'p') {
           //###### Binary Packet, starts with "b" or Panic Packet, starts with "p" #########
           BinaryPacket p = this.ParseBinaryPacket(data.Data, data);
-          if(p.Type == BinaryPacket.Typ.Data) {
+          if(p.Type == Typ.Data) {
             Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-            this.DataUpdates(sender, p.Data);
-          } else if(p.Type == BinaryPacket.Typ.Panic) {
+            this.DataUpdates(sender, p.TransferData);
+          } else if(p.Type == Typ.Panic) {
             Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Panic [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-            this.PanicUpdates(sender, p.Panic);
+            this.PanicUpdates(sender, p.TransferData);
           } else {
             Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| CRC:" + data.Crc);
           }
@@ -141,7 +141,9 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
             status = Status.Powersave;
           }
         }
-        return new DebugPacket(text, name, version, ipaddress, wifissid, wifiactive, batteryLevel, freqOffset, status, recieveddata);
+        Boolean correct_if = recieveddata is Ic880aRecievedObj ? name.ToCharArray()[0] % 8 == ((Ic880aRecievedObj)recieveddata).Interface : true;
+        String hash = BitConverter.ToString(this.SHA256Calc(data)).Replace("-", "");
+        return new DebugPacket(text, name, version, ipaddress, wifissid, wifiactive, batteryLevel, freqOffset, status, correct_if, hash, recieveddata);
       } else {
         return new DebugPacket() { Type = DebugPacket.Typ.Error };
       }
@@ -178,7 +180,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
           }
         }
         return new BinaryPacket(name, typ, lat, lon, hdop, height, date, battery, recieveddata, old);
-      } else {
+      } else if(data.Length == 18) {
         UInt16 counter = BitConverter.ToUInt16(data, 0);
         String name = data[3] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[2] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[2], data[3] }).Trim();
         Single lat = BitConverter.ToSingle(data, 4);
@@ -195,6 +197,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         String hash = BitConverter.ToString(this.SHA256Calc(data)).Replace("-", "");
         return new BinaryPacket(name, typ, lat, lon, hdop, height, battery, counter, has_time, has_date, has_fix, sat, correct_if, hash, recieveddata);
       }
+      return null;
     }
 
     private Byte[] DecodeData(Byte[] encoded) {

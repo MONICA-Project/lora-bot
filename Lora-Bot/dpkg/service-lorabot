@@ -5,10 +5,10 @@ Description=Lora-Bot
 After=network-online.target
 
 [Service]
-User=root
-Group=root
+User=loragwbot
+Group=loragwbot
 WorkingDirectory=/usr/local/bin/lorabot
-ExecStart=/usr/bin/mono /usr/local/bin/lorabot/Lora-Bot.exe
+ExecStart=/usr/bin/dotnet /usr/local/bin/lorabot/Lora-Bot.dll
 KillMode=control-group
 TimeoutStopSec=5
 Restart=on-failure

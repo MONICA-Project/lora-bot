@@ -7,6 +7,15 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
       get; set;
     }
 
+    public Boolean HasDate {
+      get; set;
+    }
+
+    public Boolean HasTime {
+      get; set;
+    }
+    
+
     public Double Hdop {
       get; set;
     }
@@ -20,10 +29,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     }
 
     public Double Longitude {
-      get; set;
-    }
-    
-    public DateTime Time {
       get; set;
     }
 
@@ -42,6 +47,11 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     }
     [Obsolete("Should do by client")]
     public DateTime LastGPSPos {
+      get; set;
+    }
+
+    [Obsolete("Will be not Transmitted anymore")]
+    public DateTime Time {
       get; set;
     }
 

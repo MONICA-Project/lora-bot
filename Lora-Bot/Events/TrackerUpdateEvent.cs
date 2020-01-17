@@ -13,15 +13,13 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
 
     public String Host => Environment.MachineName;
 
-    public UInt16 Counter { get; set; }
+    public Boolean CorrectInterface {
+      get; set;
+    }
 
-    public Boolean HasTime { get; set; }
-
-    public Boolean HasDate { get; set; }
-
-    public Boolean CorrectInterface { get; set; }
-
-    public String Hash { get; set; }
+    public String Hash {
+      get; set;
+    }
     #endregion
 
     #region Global Lora Data

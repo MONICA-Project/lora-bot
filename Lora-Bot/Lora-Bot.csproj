@@ -8,14 +8,15 @@
     <Description>Program that runs on a device and process the Lora traffic from the Lora library</Description>
     <Company>Fraunhofer FIT</Company>
     <Authors>BlubbFish</Authors>
-    <Version>1.8.4</Version>
+    <Version>2.0.0</Version>
     <Copyright>Copyright © Fraunhofer FIT, BlubbFish 2018 - 08.07.2019</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <NeutralLanguage>de-DE</NeutralLanguage>
     <PackageProjectUrl>https://github.com/MONICA-Project/lora-bot</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MONICA-Project/lora-bot.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>1.8.4 Fixing a bug related to threaded working with data
+    <PackageReleaseNotes>2.0.0 The total rewrite
+1.8.4 Fixing a bug related to threaded working with data
 1.8.3 Update to changed ConnectorDataMqtt and remove Scral from code, because its an own project now, that uses the mqtt-backend
 1.8.2 Bugfix, create also an event for sending normal loradata when update panic
 1.8.1 Add Hostname to MQTT, so you can see from witch device the data is recieved
@@ -48,6 +49,7 @@
   <ItemGroup>
     <Content Include="../doc/Binaryformat.md" />
 	<Content Include="../doc/Mqttformat.md" />
+	<Content Include="../doc/Mqttformat.yml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +63,17 @@
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="config-example\mqtt.conf.example">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="config-example\settings.conf.example">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="config-example\txtout.conf.example">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

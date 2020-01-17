@@ -1,7 +1,9 @@
 #!/bin/bash
 
-if [[ $(systemctl is-active lorabot || true) == "active" ]]
+DEBNAME="lorabot"
+
+if [[ $(systemctl is-active $DEBNAME || true) == "active" ]]
 then
-    touch /tmp/lorabot_service_runner
-    service lorabot stop
+    touch /tmp/$DEBNAME_service_runner
+    service $DEBNAME stop
 fi

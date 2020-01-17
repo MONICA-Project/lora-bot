@@ -29,7 +29,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
 
     protected override void LibUpadteThread(Object state) {
       try {
-        if(state is DataUpdateEvent data) {
+        if(state is LocationUpdateEvent data) {
           String s = data.Name + "," + data.Receivedtime.ToString("o") + "," + data.Gps.Latitude + "," + data.Gps.Longitude + "," + data.Rssi + "," + data.PacketRssi + "," + data.Snr + ",https://www.google.de/maps?q=" + data.Gps.Latitude + "%2C" + data.Gps.Longitude;
           this.file.WriteLine(s);
           this.file.Flush();
