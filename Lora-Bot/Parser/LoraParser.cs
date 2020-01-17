@@ -191,7 +191,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         Boolean has_date = (data[16] & 0x20) != 0 ? true : false;
         Boolean has_fix = (data[16] & 0x10) != 0 ? true : false;
         Byte sat = (Byte)(data[16] & 0x0F);
-        Boolean correct_if = recieveddata is Ic880aRecievedObj ? data[3] % 8 == ((Ic880aRecievedObj)recieveddata).Interface : true;
+        Boolean correct_if = recieveddata is Ic880aRecievedObj ? data[2] % 8 == ((Ic880aRecievedObj)recieveddata).Interface : true;
         String hash = BitConverter.ToString(this.SHA256Calc(data)).Replace("-", "");
         return new BinaryPacket(name, typ, lat, lon, hdop, height, battery, counter, has_time, has_date, has_fix, sat, correct_if, hash, recieveddata);
       }
