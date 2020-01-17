@@ -3,4 +3,4 @@
 useradd -M loragwbot
 usermod -L loragwbot
 groupadd loragwbot
-usermod -G loragwbot,adm loragwbot
+usermod -G loragwbot,adm,gpio,spi loragwbot
