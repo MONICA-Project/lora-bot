@@ -38,26 +38,6 @@ This projects depends on some librarys:
 * Unosquare RaspberryIO
 * Unosquare WiringPI
 
-
-### Test
-
-The only way to test this programm is to run it on real hardware.
-
-
-### Build
-
-Please build it with Visual Studio.
-
-To install dotnet on a Raspi:
-* [Download .NET Core Runtime 3.1.0](https://dotnet.microsoft.com/download/dotnet-core/3.1) for ARM32
-```bash
-wget [download link]
-sudo mkdir /usr/share/dotnet
-sudo tar zxf dotnet-runtime-3.1.0-linux-arm.tar.gz -C /usr/share/dotnet
-rm dotnet-runtime-3.1.0-linux-arm.tar.gz
-sudo ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet 
-```
-
 ## Contributing
 Contributions are welcome. 
 
