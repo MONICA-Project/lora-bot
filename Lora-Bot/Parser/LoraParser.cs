@@ -27,9 +27,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
       this.CryptoKey = k;
     }
 
-    private readonly SortedDictionary<String, Tuple<Double, Double, DateTime>> oldmarkerpos = new SortedDictionary<String, Tuple<Double, Double, DateTime>>();
-    private readonly Object oldmarkerposlock = new Object();
-
     public delegate void UpdateDataEvent(Object sender, LocationUpdateEvent e);
     public delegate void UpdatePanicEvent(Object sender, LocationUpdateEvent e);
     public delegate void UpdateStatusEvent(Object sender, StatusUpdateEvent e);
@@ -162,24 +159,8 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         Single lon = BitConverter.ToSingle(data, 7);
         Single hdop = (Single)data[11] / 10;
         Single height = (Single)BitConverter.ToUInt16(data, 12) / 10;
-        DateTime date = DateTime.TryParse(data[17].ToString().PadLeft(2, '0') + "." + data[18].ToString().PadLeft(2, '0') + "." + ((UInt16)(data[19] + 2000)).ToString().PadLeft(4, '0') + " " + data[14].ToString().PadLeft(2, '0') + ":" + data[15].ToString().PadLeft(2, '0') + ":" + data[16].ToString().PadLeft(2, '0'), out DateTime dv) ? dv : DateTime.MinValue;
         Single battery = ((Single)data[20] + 230) / 100;
-        Tuple<Double, Double, DateTime> old = new Tuple<Double, Double, DateTime>(0, 0, DateTime.MinValue);
-        if(lat != 0 || lon != 0) {
-          lock(this.oldmarkerposlock) {
-            if(this.oldmarkerpos.ContainsKey(name)) {
-              this.oldmarkerpos[name] = new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now);
-            } else {
-              this.oldmarkerpos.Add(name, new Tuple<Double, Double, DateTime>(lat, lon, DateTime.Now));
-            }
-          }
-        }
-        lock(this.oldmarkerpos) {
-          if(this.oldmarkerpos.ContainsKey(name)) {
-            old = this.oldmarkerpos[name];
-          }
-        }
-        return new BinaryPacket(name, typ, lat, lon, hdop, height, date, battery, recieveddata, old);
+        return new BinaryPacket(name, typ, lat, lon, hdop, height, battery, recieveddata);
       } else if(data.Length == 18) {
         UInt16 counter = BitConverter.ToUInt16(data, 0);
         String name = data[3] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[2] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[2], data[3] }).Trim();

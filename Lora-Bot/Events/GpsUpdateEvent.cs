@@ -15,7 +15,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
       get; set;
     }
     
-
     public Double Hdop {
       get; set;
     }
@@ -37,26 +36,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Events {
     }
     #endregion
 
-    [Obsolete("Should do by client")]
-    public Double LastLatitude {
-      get; set;
-    }
-    [Obsolete("Should do by client")]
-    public Double LastLongitude {
-      get; set;
-    }
-    [Obsolete("Should do by client")]
-    public DateTime LastGPSPos {
-      get; set;
-    }
-
-    [Obsolete("Will be not Transmitted anymore")]
-    public DateTime Time {
-      get; set;
-    }
-
-    public override String ToString() => "Lat: " + this.Latitude + " [" + this.LastLatitude + "] Lon: " + this.Longitude + " [" + this.LastLongitude + "] Height: " + this.Height + " -- Time: " + this.Time + " HDOP: " + this.Hdop + " Fix: " + this.Fix;
-
-    //public override String ToString() => "Lat: " + this.Latitude + " Lon: " + this.Longitude + " Height: " + this.Height + " -- Time: " + this.Time + " HDOP: " + this.Hdop + " Fix: " + this.Fix;
+    public override String ToString() => "Lat: " + this.Latitude + " Lon: " + this.Longitude + " Height: " + this.Height + " -- HDOP: " + this.Hdop + " Satelites: " + this.Satelites + " Fix: [" + (this.HasTime ? "t" : "x") + "," + (this.HasDate ? "d" : "x") + "," + (this.Fix ? "f" : "x") + "]";
   }
 }
