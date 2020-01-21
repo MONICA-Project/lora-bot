@@ -2,17 +2,20 @@
 
 ## 2.0.0 - The total rewrite
 ### New Features
-
 * Add Github Actions
 * Parsing data is now in this software part
 * Add new fileds in json
 * Documenting the Binary transmission
 
 ### Bugfixes
+* Parsing battery in status packet now works with InvariantCulture
+
 ### Changes
 * Debugging will be done over configure file
 * Refactoring
 * Porting to .NET Core
+* Round the values height, battery and hdop now to its calculated values
+* Only understand the binaryformat from version 16
 
 ## 1.8.4
 ### New Features

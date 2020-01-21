@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -70,18 +70,6 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
           } else {
             Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "|" + BitConverter.ToString(decoded).Replace("-", " ") + "| CRC:" + data.Crc);
           }
-        } else if (data.Data.Length == 21 && data.Data[0] == 'b' || data.Data[0] == 'p') {
-          //###### Binary Packet, starts with "b" or Panic Packet, starts with "p" #########
-          BinaryPacket p = this.ParseBinaryPacket(data.Data, data);
-          if(p.Type == Typ.Data) {
-            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Data [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-            this.DataUpdates(sender, p.TransferData);
-          } else if(p.Type == Typ.Panic) {
-            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Panic [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| RSSI:" + data.Rssi + " SNR:" + data.Snr);
-            this.PanicUpdates(sender, p.TransferData);
-          } else {
-            Console.WriteLine("Fraunhofer.Fit.Iot.Lora.LoraController.ReceivePacket: Binary-Packet not Match! [" + data.Data.Length + "]|" + BitConverter.ToString(data.Data).Replace("-", " ") + "| CRC:" + data.Crc);
-          }
         } else if(data.Data.Length > 3 && data.Data[0] == 'd' && data.Data[1] == 'e' && data.Data[2] == 'b') {
           //###### Debug Packet, three lines #############
           DebugPacket p = this.ParseDebugPacket(data.Data, data);
@@ -126,7 +114,7 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
         String ipaddress = infos[1];
         String wifissid = infos[2];
         Boolean wifiactive = infos[3] == "t";
-        _ = Double.TryParse(infos[4], out Double batteryLevel);
+        _ = Double.TryParse(infos[4], NumberStyles.Any, CultureInfo.InvariantCulture, out Double batteryLevel);
         _ = Int32.TryParse(infos[5], out Int32 freqOffset);
         Status status = Status.Unknown;
         if(Int32.TryParse(infos[6], out Int32 deviceStatus)) {
@@ -147,38 +135,21 @@ namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Parser {
     }
 
     private BinaryPacket ParseBinaryPacket(Byte[] data, RecievedData recieveddata) {
-      if(data.Length == 21) {
-        Typ typ = Typ.Unknown;
-        if(data[0] == 'b') {
-          typ = Typ.Data;
-        } else if(data[0] == 'p') {
-          typ = Typ.Panic;
-        }
-        String name = data[2] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[1] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[1], data[2] }).Trim();
-        Single lat = BitConverter.ToSingle(data, 3);
-        Single lon = BitConverter.ToSingle(data, 7);
-        Single hdop = (Single)data[11] / 10;
-        Single height = (Single)BitConverter.ToUInt16(data, 12) / 10;
-        Single battery = ((Single)data[20] + 230) / 100;
-        return new BinaryPacket(name, typ, lat, lon, hdop, height, battery, recieveddata);
-      } else if(data.Length == 18) {
-        UInt16 counter = BitConverter.ToUInt16(data, 0);
-        String name = data[3] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[2] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[2], data[3] }).Trim();
-        Single lat = BitConverter.ToSingle(data, 4);
-        Single lon = BitConverter.ToSingle(data, 8);
-        Single height = (Single)BitConverter.ToUInt16(data, 12) / 10;
-        Single battery = ((Single)data[14] + 230) / 100;
-        Single hdop = (Single)data[15] / 10;
-        Typ typ = (data[16] & 0x80) != 0 ? Typ.Panic : Typ.Data;
-        Boolean has_time = (data[16] & 0x40) != 0 ? true : false;
-        Boolean has_date = (data[16] & 0x20) != 0 ? true : false;
-        Boolean has_fix = (data[16] & 0x10) != 0 ? true : false;
-        Byte sat = (Byte)(data[16] & 0x0F);
-        Boolean correct_if = recieveddata is Ic880aRecievedObj ? data[2] % 8 == ((Ic880aRecievedObj)recieveddata).Interface : true;
-        String hash = BitConverter.ToString(this.SHA256Calc(data)).Replace("-", "");
-        return new BinaryPacket(name, typ, lat, lon, hdop, height, battery, counter, has_time, has_date, has_fix, sat, correct_if, hash, recieveddata);
-      }
-      return null;
+      UInt16 counter = BitConverter.ToUInt16(data, 0);
+      String name = data[3] == 0 ? Encoding.ASCII.GetString(new Byte[] { data[2] }).Trim() : Encoding.ASCII.GetString(new Byte[] { data[2], data[3] }).Trim();
+      Single lat = BitConverter.ToSingle(data, 4);
+      Single lon = BitConverter.ToSingle(data, 8);
+      Double height = Math.Round((Single)BitConverter.ToUInt16(data, 12) / 10, 1);
+      Double battery = Math.Round(((Single)data[14] + 230) / 100, 2);
+      Double hdop = Math.Round((Single)data[15] / 10, 1);
+      Typ typ = (data[16] & 0x80) != 0 ? Typ.Panic : Typ.Data;
+      Boolean has_time = (data[16] & 0x40) != 0 ? true : false;
+      Boolean has_date = (data[16] & 0x20) != 0 ? true : false;
+      Boolean has_fix = (data[16] & 0x10) != 0 ? true : false;
+      Byte sat = (Byte)(data[16] & 0x0F);
+      Boolean correct_if = recieveddata is Ic880aRecievedObj ? data[2] % 8 == ((Ic880aRecievedObj)recieveddata).Interface : true;
+      String hash = BitConverter.ToString(this.SHA256Calc(data)).Replace("-", "");
+      return new BinaryPacket(name, typ, lat, lon, hdop, height, battery, counter, has_time, has_date, has_fix, sat, correct_if, hash, recieveddata);
     }
 
     private Byte[] DecodeData(Byte[] encoded) {
