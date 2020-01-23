@@ -33,16 +33,10 @@ This projects depends on some librarys:
 
 #### External
 * litjson
-
-
-### Test
-
-The only way to test this programm is to run it on real hardware.
-
-
-### Build
-
-Please build it with Visual Studio.
+* M2Mqtt
+* Unosquare Swan
+* Unosquare RaspberryIO
+* Unosquare WiringPI
 
 ## Contributing
 Contributions are welcome. 

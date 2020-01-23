@@ -1,58 +1,68 @@
 [logging]
 path=/var/log/lorabot.log
 
-;[lora]
-;type=Draginolora
-;pin_sspin=Pin06
-;pin_dio0=Pin07
-;pin_rst=Pin00
-;frequency=868100000
-;spreadingfactor=8
-;signalbandwith=125000
-;codingrate=6
+[general]
+key=DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF
+; MUST BE 32 BYTES in Hex!
 
-[lora]
-type=Ic880alora
-pin_sspin=Pin10
-pin_rst=Pin21
-spichan=Channel0
-; Set Basic Frequencies
-frequency0=867125000
-frequency1=868125000
-; Set Per Virtual Interface IF0-7 (Freq means the offset to the basic frequency)
-interface0enable=true
-interface0chain=0
-interface0frequency=-375000
-interface1enable=true
-interface1chain=0
-interface1frequency=-125000
-interface2enable=true
-interface2chain=0
-interface2frequency=125000
-interface3enable=true
-interface3chain=0
-interface3frequency=375000
-interface4enable=true
-interface4chain=1
-interface4frequency=-375000
-interface5enable=true
-interface5chain=1
-interface5frequency=-125000
-interface6enable=true
-interface6chain=1
-interface6frequency=125000
-interface7enable=true
-interface7chain=1
-interface7frequency=375000
-; Virtual Interface IF8 Lora Interface
-interface8enable=false
-interface8chain=1
-interface8frequency=-200000
-lorabandwith=250000
-loraspreadingfactor=7
-; Virtual Interface IF9 FSK Interface
-interface9enable=false
-interface9chain=1
-interface9frequency=300000
-fskbandwith=125000
-fskdatarate=50000
+;[lora]
+;debug=true
+;type=Dragino
+;pin_sspin=Pin25
+;pin_dio0=Pin04
+;pin_rst=Pin17
+;spichan=Channel0
+;freq=867000000
+;sf=10
+;bw=125000
+;cr=7
+;;18 = 0x12
+;syncword=18
+;preamblelength=8
+;currentlimit=140
+;power=17
+;gain=0
+
+;[lora]
+;debug=true
+;type=Ic880a
+;pin_sspin=8
+;pin_rst=5
+;spichan=Channel0
+; ## Set Basic Frequencies ##
+;frequency0=867125000
+;frequency1=868125000
+; ## Set Per Virtual Interface IF0-7 (Freq means the offset to the basic frequency) ##
+;interface0frequency=-375000
+;interface0chain=0
+;interface1frequency=-125000
+;interface1chain=0
+;interface2frequency=125000
+;interface2chain=0
+;interface3frequency=375000
+,interface3chain=0
+;interface4frequency=-375000
+;interface4chain=1
+;interface5frequency=-125000
+;interface5chain=1
+;interface6frequency=125000
+;interface6chain=1
+;interface7frequency=375000
+;interface7chain=1
+; ## Virtual Interface IF8 Lora Interface ##
+;interface8frequency=0
+;interface8chain=0
+;lorabandwith=250000
+;loraspreadingfactor=10
+; ## Virtual Interface IF9 FSK Interface ##
+;interface9frequency=300000
+;interface9chain=1
+;fskbandwith=125000
+;fskdatarate=50000
+; ## General Settings ##
+;sendbw=125000
+;sendsf=10
+;sendcr=7
+;sendpreamble=8
+;crc=true
+;lorawan=false

@@ -1,9 +1,17 @@
 #!/bin/bash
 
-systemctl enable lorabot
+DEBNAME="lorabot"
+
+systemctl enable $DEBNAME
 systemctl daemon-reload
 
-if [ -f /tmp/lorabot_service_runner ]; then
-    service lorabot start
-    rm /tmp/lorabot_service_runner
+touch /var/log/$DEBNAME.log
+chown loragwbot:loragwbot /var/log/$DEBNAME.log
+chmod 644 /var/log/$DEBNAME.log
+
+chown -R loragwbot:loragwbot /usr/local/bin/$DEBNAME
+
+if [ -f /tmp/$DEBNAME_service_runner ]; then
+    service $DEBNAME start
+    rm /tmp/$DEBNAME_service_runner
 fi

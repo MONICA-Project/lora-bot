@@ -1,16 +1,18 @@
 ﻿using System;
+
 using BlubbFish.Utils;
 using BlubbFish.Utils.IoT.Bots.Events;
 using BlubbFish.Utils.IoT.Bots.Moduls;
 using BlubbFish.Utils.IoT.Connector;
 using BlubbFish.Utils.IoT.Interfaces;
-using Fraunhofer.Fit.Iot.Lora;
+
+using Fraunhofer.Fit.IoT.Bots.LoraBot.Parser;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls {
-  class Mqtt : Mqtt<LoraController> {
+  class Mqtt : Mqtt<LoraParser> {
     public override event ModulEvent Update;
 
-    public Mqtt(LoraController lib, InIReader settings) : base(lib, settings) { }
+    public Mqtt(LoraParser lib, InIReader settings) : base(lib, settings) { }
 
     public override void EventLibSetter() {
       this.library.DataUpdate += this.HandleLibUpdate;

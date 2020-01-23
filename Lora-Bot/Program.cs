@@ -1,58 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using BlubbFish.Utils;
 using BlubbFish.Utils.IoT.Bots;
+
 using Fraunhofer.Fit.Iot.Lora;
 using Fraunhofer.Fit.Iot.Lora.Events;
+using Fraunhofer.Fit.IoT.Bots.LoraBot.Events;
+using Fraunhofer.Fit.IoT.Bots.LoraBot.Parser;
 
 namespace Fraunhofer.Fit.IoT.Bots.LoraBot {
-  class Program : Bot<LoraController> {
+  class Program : Bot<LoraParser> {
     static void Main(String[] args) => new Program(args);
-    public Program(String[] args) {
+    public Program(String[] _) {
       InIReader.SetSearchPath(new List<String>() { "/etc/lorabot", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\lorabot" });
-      CmdArgs.Instance.SetArguments(new Dictionary<String, CmdArgs.VaildArguments>() {
-        { "-freq", new CmdArgs.VaildArguments(CmdArgs.ArgLength.Touple) },
-        { "-bw", new CmdArgs.VaildArguments(CmdArgs.ArgLength.Touple) },
-        { "-sp", new CmdArgs.VaildArguments(CmdArgs.ArgLength.Touple) },
-        { "-cr", new CmdArgs.VaildArguments(CmdArgs.ArgLength.Touple) },
-      }, args);
-      if (!CmdArgs.Instance.HasArgumentType("-freq") && !CmdArgs.Instance.HasArgumentType("-bw") && !CmdArgs.Instance.HasArgumentType("-sp") && !CmdArgs.Instance.HasArgumentType("-cr")) {
-        if (!InIReader.ConfigExist("settings")) {
-          Helper.WriteError("No settings.ini found. Abord!");
-          return;
-        }
-        InIReader settings = InIReader.GetInstance("settings");
-        this.logger.SetPath(settings.GetValue("logging", "path"));
-        LoraController lora = new LoraController(settings.GetSection("lora"));
-        this.ModulLoader("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls", lora);
-        this.ModulInterconnect();
-        this.ModulEvents();
-        lora.DataUpdate += this.LoraDataUpdate;
-        lora.StatusUpdate += this.LoraStatusUpdate;
-        lora.PanicUpdate += this.LoraPanicUpdate;
-        this.WaitForShutdown();
-        Console.WriteLine("after wait");
-        this.ModulDispose();
-        Console.WriteLine("after dispose");
-        lora.Dispose();
-        Console.WriteLine("after loradisp");
-      } else if(CmdArgs.Instance.HasArgumentType("-freq") && CmdArgs.Instance.HasArgumentType("-bw") && CmdArgs.Instance.HasArgumentType("-sp") && CmdArgs.Instance.HasArgumentType("-cr")) {
-        LoraController lora = new LoraController(new Dictionary<String, String>() {
-          { "frequency", CmdArgs.Instance.GetArgumentData("-freq") },
-          { "signalbandwith", CmdArgs.Instance.GetArgumentData("-bw") },
-          { "spreadingfactor", CmdArgs.Instance.GetArgumentData("-sp") },
-          { "codingrate", CmdArgs.Instance.GetArgumentData("-cr") }
-        }, false);
-      } else {
-        Helper.WriteError("Usage for Debug:\n" + CmdArgs.Instance.GetUsageList("Lora-Bot"));
+      if(!InIReader.ConfigExist("settings")) {
+        Helper.WriteError("No settings.ini found. Abord!");
+        return;
       }
+      InIReader settings = InIReader.GetInstance("settings");
+      this.logger.SetPath(settings.GetValue("logging", "path"));
+
+      LoraParser parser = new LoraParser(settings.GetValue("general", "key"));
+
+      LoraController lora = new LoraController(settings.GetSection("lora"));
+      lora.Received += parser.ReceivedPacket;
+
+      this.ModulLoader("Fraunhofer.Fit.IoT.Bots.LoraBot.Moduls", parser);
+      this.ModulInterconnect();
+      this.ModulEvents();
+
+      parser.DataUpdate += this.Lora_Parsed;
+      parser.PanicUpdate += this.Lora_Parsed;
+      parser.StatusUpdate += this.Lora_Parsed;
+      lora.Transmitted += this.Lora_Transmitted;
+
+      this.WaitForShutdown();
+      Console.WriteLine("after wait");
+
+      this.ModulDispose();
+      Console.WriteLine("after dispose");
+
+      lora.Dispose();
+      Console.WriteLine("after loradisp");
     }
 
-    private void LoraPanicUpdate(Object sender, PanicUpdateEvent e) => Console.WriteLine("-> Lora-Panic: " + e.ToString());
-
-    private void LoraStatusUpdate(Object sender, StatusUpdateEvent e) => Console.WriteLine("-> Lora-Status: " + e.ToString());
-
-    private void LoraDataUpdate(Object sender, DataUpdateEvent e) => Console.WriteLine("-> Lora-Data: " + e.ToString());
-
+    private void Lora_Transmitted(Object sender, TransmittedData e) => Console.WriteLine("-> " + e.ToString());
+    private void Lora_Parsed(Object sender, TrackerUpdateEvent e) => Console.WriteLine("<- " + e.ToString());
   }
 }
