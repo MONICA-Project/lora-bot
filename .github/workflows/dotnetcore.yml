@@ -13,9 +13,9 @@ jobs:
         ref: refs/heads/master
         submodules: true
 
-    - name: Checkout last versions
-      run: git -C Lora checkout --progress --force dotnetcore
-      working-directory: ../lora-project
+#    - name: Checkout last versions
+#      run: git -C Lora checkout --progress --force dotnetcore
+#      working-directory: ../lora-project
 
     - name: Checkout last versions
       run: git -C Lora-Bot checkout --progress --force ${{ github.sha }}
