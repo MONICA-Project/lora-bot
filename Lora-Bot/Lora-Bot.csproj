@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,7 +9,7 @@
     <Company>Fraunhofer FIT</Company>
     <Authors>BlubbFish</Authors>
     <Version>2.0.0</Version>
-    <Copyright>Copyright © Fraunhofer FIT, BlubbFish 2018 - 08.07.2019</Copyright>
+    <Copyright>Copyright © Fraunhofer FIT, BlubbFish 2018 - 23.01.2020</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <NeutralLanguage>de-DE</NeutralLanguage>
     <PackageProjectUrl>https://github.com/MONICA-Project/lora-bot</PackageProjectUrl>
